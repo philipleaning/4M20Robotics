@@ -20,20 +20,20 @@ close all
 %% Parameters
 
 % Simulation Options
-sim_length = 6000;    % simulation length (100 is very roughly 1sec of playback at 1x speed)
+sim_length = 2000;    % simulation length (100 is very roughly 1sec of playback at 1x speed)
 no_of_sheep = 50;     % self explanatory (cannot have too many or placement will fail!)
 field_size = 100;     % size of the field that the sheep are grazing on
-sheep_mvt = 0.1;      % amount of sheep movement per simulation step
+sheep_mvt = 0.5;      % amount of sheep movement per simulation step
 p_start_mvt = 0.008;  % chance of sheep to start movement
-p_cont_mvt = 0.95;    % chance of sheep to continue moving once moving
+p_cont_mvt = 0.90;    % chance of sheep to continue moving once moving
 deg_of_freedom = 30;  % the arc which the sheep is free to choose to head in
-sheep_dist = 5;      % min distance between adjacent sheep
+sheep_dist = 4;       % min distance between adjacent sheep
 
 
 % Playback Options
 fps = 25;             % draw rate (usually around 25 gives a smooth playback)
-plot_paths = false;   % choose to plot paths of sheep? (resource intensive! reduce draw rate, e.g. 5fps to help!)
-playback_speed = 3;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
+plot_paths = false;   % choose to plot paths of sheep? (very resource intensive! reduce draw rate, e.g. 5fps to help!)
+playback_speed = 1;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
 
 
 %% Initialisation
@@ -52,14 +52,17 @@ figure(1)
 hold on
 axis([0 field_size 0 field_size])
 
+% initialise positions of sheep. Algorithm also watches out and doesn't
+% place sheep too close to each other.
 tic
 for i = 1:no_of_sheep
     sheep_pos_x(1,i) = rand*(field_size*0.8) + field_size*0.1; % initialise at middle 80% of the field
     sheep_pos_y(1,i) = rand*(field_size*0.8) + field_size*0.1; % initialise at middle 80% of the field
     k = 1;
-    while k <= no_of_sheep
-        if k == i
-        else
+    % check distance between current sheep being placed and other sheep
+    % before it
+    while k <= i
+        if k ~= i
             if sqrt(abs(sheep_pos_x(1,i)-sheep_pos_x(1,k))^2 + abs(sheep_pos_y(1,i)-sheep_pos_y(1,k))^2) < sheep_dist
                 while sqrt(abs(sheep_pos_x(1,i)-sheep_pos_x(1,k))^2 + abs(sheep_pos_y(1,i)-sheep_pos_y(1,k))^2) < sheep_dist
                     sheep_pos_x(1,i) = rand*(field_size*0.8) + field_size*0.1; % initialise at middle 80% of the field
@@ -73,8 +76,8 @@ for i = 1:no_of_sheep
         end
         k = k + 1;
     end
-    prev_angle(1,i) = rand*2*pi;
-    sheep(i) = line(sheep_pos_x(1,i),sheep_pos_y(1,i),'color',[0 0 0],'Marker','.','MarkerSize',15); 
+    prev_angle(1,i) = rand*2*pi; % randomise the direction sheep face
+    sheep(i) = line(sheep_pos_x(1,i),sheep_pos_y(1,i),'color',[0 0 0],'Marker','.','MarkerSize',15); % marker properties to visualise sheep 
 end
 
 
@@ -98,20 +101,20 @@ for i = 2:sim_length
                 % do nothing (code to implement non-movement executed later)
             end
         end
-        % code to (not) move sheep
+        % code to move sheep
         if sheep_move(1,sheep_no) == true
             angle = (rand-0.5)*deg_of_freedom/180*pi + prev_angle(1,sheep_no);
             prev_angle(1,sheep_no) = angle;
             sheep_pos_x(i,sheep_no) = sheep_pos_x(i-1,sheep_no) + cos(angle)*sheep_mvt;
             sheep_pos_y(i,sheep_no) = sheep_pos_y(i-1,sheep_no) + sin(angle)*sheep_mvt;
-            % prevent sheep from clashing into each other
+            
+            % prevent sheep from walking into each other
             k = 1;
             while k <= no_of_sheep
-                if k == sheep_no
-                else
+                if k ~= sheep_no
                     if sqrt(abs(sheep_pos_x(i,sheep_no)-sheep_pos_x(i-1,k))^2 + abs(sheep_pos_y(i,sheep_no)-sheep_pos_y(i-1,k))^2) < sheep_dist
                         while sqrt(abs(sheep_pos_x(i,sheep_no)-sheep_pos_x(i-1,k))^2 + abs(sheep_pos_y(i,sheep_no)-sheep_pos_y(i-1,k))^2) < sheep_dist
-                            angle = rand*2*pi;
+                            angle = rand*2*pi; % randomise the new angle it should face and attempt to walk
                             prev_angle(1,sheep_no) = angle;
                             sheep_pos_x(i,sheep_no) = sheep_pos_x(i-1,sheep_no) + cos(angle)*sheep_mvt*1.1;
                             sheep_pos_y(i,sheep_no) = sheep_pos_y(i-1,sheep_no) + sin(angle)*sheep_mvt*1.1;
@@ -130,6 +133,8 @@ for i = 2:sim_length
                sheep_pos_y(i,sheep_no) = sheep_pos_y(i-1,sheep_no);
                prev_angle(1,sheep_no) = rand*2*pi; % also reset the angle to random one so the sheep doesn't get stuck
             end
+        
+        % code to not move sheep
         else
             sheep_pos_x(i,sheep_no) = sheep_pos_x(i-1,sheep_no);
             sheep_pos_y(i,sheep_no) = sheep_pos_y(i-1,sheep_no);
@@ -149,8 +154,7 @@ for i = 2:playback_speed:sim_length
         for j = 1:no_of_sheep
             set(sheep(j),'xdata',sheep_pos_x(i,j),'ydata',sheep_pos_y(i,j));
             if plot_paths
-                if (sheep_pos_x(prev_i,j) == sheep_pos_x(i,j)) && (sheep_pos_y(prev_i,j) == sheep_pos_y(i,j))
-                else
+                if (sheep_pos_x(prev_i,j) ~= sheep_pos_x(i,j)) || (sheep_pos_y(prev_i,j) ~= sheep_pos_y(i,j))
                     plot([sheep_pos_x(prev_i,j),sheep_pos_x(i,j)],[sheep_pos_y(prev_i,j),sheep_pos_y(i,j)]);
                 end
             end
