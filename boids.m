@@ -18,8 +18,8 @@ clear all
 close all
 
 %% Parameters
-field_size = 100;
-number_of_boids = 10;
+field_size = 300;
+number_of_boids = 30;
 boids_array = Boid.empty;
 
 % Playback Options
@@ -47,7 +47,7 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:100
+for i=1:1000
     % For each boid: sum the vectors from applying the 3 rules
     for i = 1:numel(boids_array)
         % The current boid
@@ -62,7 +62,7 @@ for i=1:100
         for j = 1:numel(boids_array)
            if boids_array(j) ~= boid % if not current boid
                if norm(boids_array(j).position - boid.position) < 3
-                    v2 = v2 - (boids_array(j).position - boid.position)
+                    v2 = v2 - (boids_array(j).position - boid.position);
                end
            end
         end
@@ -83,16 +83,16 @@ for i=1:100
     for i=1:numel(boids_array)
        b = boids_array(i);
        if b.position(1) < 0 
-           b.velocity(1) = 10;
+           b.velocity(1) = 1;
        end
        if b.position(1) > field_size
-           b.velocity(1) = -10;
+           b.velocity(1) = -1;
        end
        if b.position(2) < 0
-           b.velocity(2) = 10;
+           b.velocity(2) = 1;
        end
        if b.position(2) > field_size
-           b.velocity(2) = -10;
+           b.velocity(2) = -1;
        end
     end
     boids_x_pos = zeros(1,number_of_boids);
@@ -106,5 +106,5 @@ for i=1:100
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     
-    pause(0.1);
+    pause(0.05);
 end
