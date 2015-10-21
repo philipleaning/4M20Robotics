@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 300;
-number_of_boids = 30;
+number_of_boids = 20;
 boids_array = Boid.empty;
 
 % Playback Options
