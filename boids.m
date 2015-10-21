@@ -78,6 +78,23 @@ for i=1:100
 
     end
 
+    % Bound boids approximately to field, bounce them back with a velocity
+    % change if they leave
+    for i=1:numel(boids_array)
+       b = boids_array(i);
+       if b.position(1) < 0 
+           b.velocity(1) = 10;
+       end
+       if b.position(1) > field_size
+           b.velocity(1) = -10;
+       end
+       if b.position(2) < 0
+           b.velocity(2) = 10;
+       end
+       if b.position(2) > field_size
+           b.velocity(2) = -10;
+       end
+    end
     boids_x_pos = zeros(1,number_of_boids);
     boids_y_pos = zeros(1,number_of_boids);
     
