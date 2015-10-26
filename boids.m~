@@ -18,8 +18,8 @@ clear all
 close all
 
 %% Parameters
-field_size = 100;
-number_of_boids = 20;
+field_size = 3000;
+number_of_boids = 1;
 boids_array = Boid.empty;
 
 % Playback Options
@@ -41,7 +41,7 @@ plotHandle = plot(0,0, 'o');
 % create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
-    boids_array(i).position = [rand*field_size, rand*field_size];
+    boids_array(i).position = [rand*00, rand*100];
 end
 
 %% Simulation
@@ -89,17 +89,17 @@ for i=1:1000
     % change if they leave
     for i=1:numel(boids_array)
        b = boids_array(i);
-       if b.position(1) < 10 && b.velocity(1) < 0
-           b.velocity(1) = b.velocity(1) + 0.5;
+       if b.position(1) < 0 
+           b.velocity(1) = 0.2;
        end
-       if field_size - b.position(1) < 10 && b.velocity(1) > 0
-           b.velocity(1) = b.velocity(1) - 0.5;
+       if b.position(1) > field_size
+           b.velocity(1) = -0.2;
        end
-       if b.position(2) < 10 && b.velocity(2) < 0
-           b.velocity(2) = b.velocity(2) + 0.5;
+       if b.position(2) < 0
+           b.velocity(2) = 0.2;
        end
-       if field_size - b.position(2) < 10 && b.velocity(2) > 0
-           b.velocity(2) = b.velocity(2) - 0.5;
+       if b.position(2) > field_size
+           b.velocity(2) = -0.2;
        end
     end
     boids_x_pos = zeros(1,number_of_boids);
