@@ -18,8 +18,8 @@ clear all
 close all
 
 %% Parameters
-field_size = 3000;
-number_of_boids = 1;
+field_size = 500;
+number_of_boids = 20;
 boids_array = Boid.empty;
 
 % Playback Options
@@ -32,6 +32,8 @@ playback_speed = 1;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
 
 fprintf('Initialising simulation...');
 
+set (gcf, 'WindowButtonMotionFcn', @mouseMove);
+
 % initialise the figure
 fig1 = figure(1);
 hold on
@@ -41,7 +43,7 @@ plotHandle = plot(0,0, 'o');
 % create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
-    boids_array(i).position = [rand*00, rand*100];
+    boids_array(i).position = [rand*field_size, rand*field_size];
 end
 
 %% Simulation
@@ -79,7 +81,7 @@ for i=1:1000
         else % Random walk
             % Update boids velocity, random walk
             delta_velocity = [(randn)*0.1,(randn)*0.1];
-            boid.velocity = boid.velocity + delta_velocity
+            boid.velocity = boid.velocity + delta_velocity;
             boid.position = boid.position + boid.velocity;
         end
        
@@ -89,17 +91,17 @@ for i=1:1000
     % change if they leave
     for i=1:numel(boids_array)
        b = boids_array(i);
-       if b.position(1) < 0 
-           b.velocity(1) = 0.2;
+       if b.position(1) < 30 && b.velocity(1) < 0
+           b.velocity(1) = b.velocity(1) + 0.5;
        end
-       if b.position(1) > field_size
-           b.velocity(1) = -0.2;
+       if field_size - b.position(1) < 30 && b.velocity(1) > 0
+           b.velocity(1) = b.velocity(1) - 0.5;
        end
-       if b.position(2) < 0
-           b.velocity(2) = 0.2;
+       if b.position(2) < 30 && b.velocity(2) < 0
+           b.velocity(2) = b.velocity(2) + 0.5;
        end
-       if b.position(2) > field_size
-           b.velocity(2) = -0.2;
+       if field_size - b.position(2) < 30 && b.velocity(2) > 0
+           b.velocity(2) = b.velocity(2) - 0.5;
        end
     end
     boids_x_pos = zeros(1,number_of_boids);
@@ -112,6 +114,12 @@ for i=1:1000
     end
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
+    
+    bla = getMousePoint;
+    
+    if bla  ~= [] 
+        thing = bla(:,1)
+    end
     
     pause(0.05);
 end

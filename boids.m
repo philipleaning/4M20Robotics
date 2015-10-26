@@ -114,6 +114,12 @@ for i=1:1000
     end
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
-    bla = getMousePoint
+    
+    pointMatrix = getMousePoint;
+    
+    if ~isempty(pointMatrix)
+        point = pointMatrix(:,1)
+    end
+    
     pause(0.05);
 end
