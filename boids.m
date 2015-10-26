@@ -50,10 +50,28 @@ end
 fprintf('Running simulation...')
 
 for i=1:1000
+    % For each boid, see if close enough to sheepdog (mouse) to be afraid
+    for i = 1:numel(boids_array)
+        boid = boids_array(i);
+        % Get sheepdog (mouse pointer) position.
+        pointMatrix = getMousePoint;
+        if ~isempty(pointMatrix)
+            mousePoint = pointMatrix(:,1);
+            distance_from_dog = norm(boid.position - mousePoint.');
+            if distance_from_dog < 100 
+               boid.afraid = true;
+            else
+                boid.afraid = false;
+            end
+        end 
+        
+    end
+    
     % For each boid: sum the vectors from applying the 3 rules
     for i = 1:numel(boids_array)
         % The current boid
         boid = boids_array(i);
+        
         % If afraid use boid rules, else, random walk
         if boid.afraid == true
             % Boids move to centre of gravity, 1% a step
@@ -114,12 +132,6 @@ for i=1:1000
     end
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
-    
-    pointMatrix = getMousePoint;
-    
-    if ~isempty(pointMatrix)
-        point = pointMatrix(:,1)
-    end
     
     pause(0.05);
 end
