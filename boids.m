@@ -76,7 +76,7 @@ for i=1:1000
         if boid.afraid == true
             % Boids move to centre of gravity, 1% a step
             pos_com = boids_com(boids_array);
-            v1 = ( pos_com - boid.position ) / 100;
+            v1 = ( pos_com - boid.position ) / 300;
 
             % Boids avoid each other, repel from all boids within 3 units
             v2 = [0,0];
@@ -99,7 +99,7 @@ for i=1:1000
         else % Random walk
             % Update boids velocity, random walk
             delta_velocity = [(randn)*0.1,(randn)*0.1];
-            boid.velocity = boid.velocity + delta_velocity;
+            boid.velocity = 0.93*boid.velocity + delta_velocity;
             boid.position = boid.position + boid.velocity;
         end
        
