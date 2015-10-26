@@ -32,6 +32,8 @@ playback_speed = 1;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
 
 fprintf('Initialising simulation...');
 
+set (gcf, 'WindowButtonMotionFcn', @mouseMove);
+
 % initialise the figure
 fig1 = figure(1);
 hold on
@@ -79,7 +81,7 @@ for i=1:1000
         else % Random walk
             % Update boids velocity, random walk
             delta_velocity = [(randn)*0.1,(randn)*0.1];
-            boid.velocity = boid.velocity + delta_velocity
+            boid.velocity = boid.velocity + delta_velocity;
             boid.position = boid.position + boid.velocity;
         end
        
@@ -112,6 +114,6 @@ for i=1:1000
     end
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
-    
+    bla = getMousePoint
     pause(0.05);
 end
