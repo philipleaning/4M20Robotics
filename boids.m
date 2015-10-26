@@ -110,16 +110,16 @@ for i=1:1000
     for i=1:numel(boids_array)
        b = boids_array(i);
        if b.position(1) < 30 && b.velocity(1) < 0
-           b.velocity(1) = b.velocity(1) + 0.5;
+           b.velocity(1) = b.velocity(1) + 2;
        end
        if field_size - b.position(1) < 30 && b.velocity(1) > 0
-           b.velocity(1) = b.velocity(1) - 0.5;
+           b.velocity(1) = b.velocity(1) - 2;
        end
        if b.position(2) < 30 && b.velocity(2) < 0
-           b.velocity(2) = b.velocity(2) + 0.5;
+           b.velocity(2) = b.velocity(2) + 2;
        end
        if field_size - b.position(2) < 30 && b.velocity(2) > 0
-           b.velocity(2) = b.velocity(2) - 0.5;
+           b.velocity(2) = b.velocity(2) - 2;
        end
     end
     boids_x_pos = zeros(1,number_of_boids);
