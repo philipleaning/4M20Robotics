@@ -21,6 +21,7 @@ close all
 field_size = 500;
 number_of_boids = 20;
 boids_array = Boid.empty;
+max_speed = 5;
 
 % Playback Options
 fps = 25;             % draw rate (usually around 25 gives a smooth playback)
@@ -98,6 +99,11 @@ for i=1:1000
             end
             % Update boid velocity by summing contribution from each rule
             boid.velocity = boid.velocity + v1 + v2 + v3 + fear_velocity;
+            % Limit velocity
+            speed = norm(boid.velocity);
+            if speed > max_speed
+                boid.velocity = (boid.velocity / speed) * max_speed;
+            end
             % Update boids position
             boid.position = boid.position + boid.velocity; 
         else % Random walk

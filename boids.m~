@@ -21,6 +21,7 @@ close all
 field_size = 500;
 number_of_boids = 20;
 boids_array = Boid.empty;
+max_velocity = 5;
 
 % Playback Options
 fps = 25;             % draw rate (usually around 25 gives a smooth playback)
@@ -52,12 +53,19 @@ fprintf('Running simulation...')
 for i=1:1000
     % For each boid, see if close enough to sheepdog (mouse) to be afraid
     for i = 1:numel(boids_array)
-               % Get sheepdog (mouse pointer) position.
+        boid = boids_array(i);
+        % Get sheepdog (mouse pointer) position.
         pointMatrix = getMousePoint;
-
         if ~isempty(pointMatrix)
-            point = pointMatrix(:,1)
+            mousePoint = pointMatrix(1,1:2)
+            distance_from_dog = norm(boid.position - mousePoint);
+            if distance_from_dog < 100 
+               boid.afraid = true;
+            else
+               boid.afraid = false;
+            end
         end 
+        
     end
     
     % For each boid: sum the vectors from applying the 3 rules
@@ -69,7 +77,7 @@ for i=1:1000
         if boid.afraid == true
             % Boids move to centre of gravity, 1% a step
             pos_com = boids_com(boids_array);
-            v1 = ( pos_com - boid.position ) / 100;
+            v1 = ( pos_com - boid.position ) / 300;
 
             % Boids avoid each other, repel from all boids within 3 units
             v2 = [0,0];
@@ -84,15 +92,24 @@ for i=1:1000
             % Boids tend to each other's velocities, 
             % Add 1/8th of difference between current boid velocity and perceived velocity of the swarm
             v3 = (boid_perceived_vel(boids_array, boids_array(i)) - boid.velocity) / 8;
-
+            
+            % FEAR!!: If afraid add velocity away from dog
+            if boid.afraid 
+               fear_velocity = (boid.position - mousePoint)/norm(boid.position - mousePoint) * 0.8; 
+            end
             % Update boid velocity by summing contribution from each rule
-            boid.velocity = boid.velocity + v1 + v2 + v3;
+            boid.velocity = boid.velocity + v1 + v2 + v3 + fear_velocity;
+            % Limit velocity
+            speed = norm(boid.velocity);
+            if speed > max_velocity
+                boid.velocity = boid.velocity * norm(b/ )
+            end
             % Update boids position
             boid.position = boid.position + boid.velocity; 
         else % Random walk
             % Update boids velocity, random walk
             delta_velocity = [(randn)*0.1,(randn)*0.1];
-            boid.velocity = boid.velocity + delta_velocity;
+            boid.velocity = 0.93*boid.velocity + delta_velocity;
             boid.position = boid.position + boid.velocity;
         end
        
@@ -103,16 +120,16 @@ for i=1:1000
     for i=1:numel(boids_array)
        b = boids_array(i);
        if b.position(1) < 30 && b.velocity(1) < 0
-           b.velocity(1) = b.velocity(1) + 0.5;
+           b.velocity(1) = b.velocity(1) + 2;
        end
        if field_size - b.position(1) < 30 && b.velocity(1) > 0
-           b.velocity(1) = b.velocity(1) - 0.5;
+           b.velocity(1) = b.velocity(1) - 2;
        end
        if b.position(2) < 30 && b.velocity(2) < 0
-           b.velocity(2) = b.velocity(2) + 0.5;
+           b.velocity(2) = b.velocity(2) + 2;
        end
        if field_size - b.position(2) < 30 && b.velocity(2) > 0
-           b.velocity(2) = b.velocity(2) - 0.5;
+           b.velocity(2) = b.velocity(2) - 2;
        end
     end
     boids_x_pos = zeros(1,number_of_boids);
