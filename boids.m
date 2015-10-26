@@ -91,9 +91,13 @@ for i=1:1000
             % Boids tend to each other's velocities, 
             % Add 1/8th of difference between current boid velocity and perceived velocity of the swarm
             v3 = (boid_perceived_vel(boids_array, boids_array(i)) - boid.velocity) / 8;
-
+            
+            % FEAR!!: If afraid add velocity away from dog
+            if boid.afraid 
+               fear_velocity = (boid.position - mousePoint)/norm(boid.position - mousePoint) * 0.8; 
+            end
             % Update boid velocity by summing contribution from each rule
-            boid.velocity = boid.velocity + v1 + v2 + v3;
+            boid.velocity = boid.velocity + v1 + v2 + v3 + fear_velocity;
             % Update boids position
             boid.position = boid.position + boid.velocity; 
         else % Random walk
