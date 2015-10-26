@@ -56,12 +56,12 @@ for i=1:1000
         % Get sheepdog (mouse pointer) position.
         pointMatrix = getMousePoint;
         if ~isempty(pointMatrix)
-            mousePoint = pointMatrix(:,1);
-            distance_from_dog = norm(boid.position - mousePoint.');
+            mousePoint = pointMatrix(1,1:2)
+            distance_from_dog = norm(boid.position - mousePoint);
             if distance_from_dog < 100 
                boid.afraid = true;
             else
-                boid.afraid = false;
+               boid.afraid = false;
             end
         end 
         
