@@ -18,7 +18,7 @@ clear all
 close all
 
 %% Parameters
-field_size = 100;
+field_size = 500;
 number_of_boids = 20;
 boids_array = Boid.empty;
 
@@ -89,16 +89,16 @@ for i=1:1000
     % change if they leave
     for i=1:numel(boids_array)
        b = boids_array(i);
-       if b.position(1) < 10 && b.velocity(1) < 0
+       if b.position(1) < 30 && b.velocity(1) < 0
            b.velocity(1) = b.velocity(1) + 0.5;
        end
-       if field_size - b.position(1) < 10 && b.velocity(1) > 0
+       if field_size - b.position(1) < 30 && b.velocity(1) > 0
            b.velocity(1) = b.velocity(1) - 0.5;
        end
-       if b.position(2) < 10 && b.velocity(2) < 0
+       if b.position(2) < 30 && b.velocity(2) < 0
            b.velocity(2) = b.velocity(2) + 0.5;
        end
-       if field_size - b.position(2) < 10 && b.velocity(2) > 0
+       if field_size - b.position(2) < 30 && b.velocity(2) > 0
            b.velocity(2) = b.velocity(2) - 0.5;
        end
     end
