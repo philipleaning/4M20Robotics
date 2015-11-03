@@ -1,0 +1,7 @@
+function [ output_args ] = boid_velocity( boid )
+%BOID_VELOCITY Summary of this function goes here
+%   Detailed explanation goes here
+
+
+end
+
