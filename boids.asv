@@ -74,19 +74,16 @@ for i=1:1000
         end 
         
     end
-    if ~isempty(pointMatrix)
-        pointMatrix = getMousePoint;
-        mousePoint = pointMatrix(1,1:2);
-        dog_1.deltaVelocity = (mousePoint- dog_1.position)-dog_1.velocity;
-        dog_1.velocity = mousePoint- dog_1.position;        
-        dog_1.position = mousePoint;     
-        dog_1.deltaVelocity
-    end
-     %{
+    
+    dog_1.deltaVelocity = (mousePoint- dog_1.position)-dog_1.velocity;
+    dog_1.velocity = mousePoint- dog_1.position;        
+    dog_1.position = mousePoint;     
+    dog_1.position
+    '''
     t = cputime;
     surf(peaks(40));
     e = cputime-t
-    %}
+    '
     % For each boid: sum the vectors from applying the 3 rules
     for i = 1:numel(boids_array)
         % The current boid
