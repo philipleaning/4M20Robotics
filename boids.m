@@ -88,9 +88,9 @@ for i=1:100
     e = cputime-t
     %}
     % For each boid: sum the vectors from applying the 3 rules
-    for i = 1:numel(boids_array)
+    for j = 1:numel(boids_array)
         % The current boid
-        boid = boids_array(i);
+        boid = boids_array(j);
         
         % If afraid use boid rules, else, random walk
         if boid.afraid == true
@@ -100,17 +100,17 @@ for i=1:100
 
             % Boids avoid each other, repel from all boids within 3 units
             v2 = [0,0];
-            for j = 1:numel(boids_array)
-               if boids_array(j) ~= boid % if not current boid
-                   if norm(boids_array(j).position - boid.position) < 3
-                        v2 = v2 - (boids_array(j).position - boid.position);
+            for k = 1:numel(boids_array)
+               if boids_array(k) ~= boid % if not current boid
+                   if norm(boids_array(k).position - boid.position) < 3
+                        v2 = v2 - (boids_array(k).position - boid.position);
                    end
                end
             end
 
             % Boids tend to each other's velocities, 
             % Add 1/8th of difference between current boid velocity and perceived velocity of the swarm
-            v3 = (boid_perceived_vel(boids_array, boids_array(i)) - boid.velocity) / 8;
+            v3 = (boid_perceived_vel(boids_array, boids_array(j)) - boid.velocity) / 8;
             
             % FEAR!!: If afraid add velocity away from dog
             if boid.afraid 
@@ -136,8 +136,8 @@ for i=1:100
 
     % Bound boids approximately to field, bounce them back with a velocity
     % change if they leave
-    for i=1:numel(boids_array)
-       b = boids_array(i);
+    for j=1:numel(boids_array)
+       b = boids_array(j);
        if b.position(1) < 30 && b.velocity(1) < 0
            b.velocity(1) = b.velocity(1) + 2;
        end
@@ -154,10 +154,10 @@ for i=1:100
     boids_x_pos = zeros(1,number_of_boids);
     boids_y_pos = zeros(1,number_of_boids);
     
-    for i = 1:numel(boids_array)
-        b = boids_array(i); % Current boid
-        boids_x_pos(i) = b.position(1);
-        boids_y_pos(i) = b.position(2);
+    for j = 1:numel(boids_array)
+        b = boids_array(j); % Current boid
+        boids_x_pos(j) = b.position(1);
+        boids_y_pos(j) = b.position(2);
     end
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
