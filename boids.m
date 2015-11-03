@@ -81,6 +81,21 @@ for i=1:100
         dog_1.velocity = mousePoint- dog_1.position;        
         dog_1.position = mousePoint;     
         dog_1.deltaVelocityHistory(i,:) = dog_1.deltaVelocity;
+        for x = 1:numel(boids_array)
+           b = boids_array(x);
+           if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
+                dog_1.sheepMassHistory(i,1)=dog_1.sheepMassHistory(i,1)+1;
+           end
+           if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
+               dog_1.sheepMassHistory(i,2)=dog_1.sheepMassHistory(i,2)+1;
+           end
+           if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
+               dog_1.sheepMassHistory(i,3)=dog_1.sheepMassHistory(i,3)+1;
+           end
+           if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
+               dog_1.sheepMassHistory(i,4)=dog_1.sheepMassHistory(i,4)+1;
+           end
+        end
     end
      %{
     t = cputime;
@@ -165,3 +180,4 @@ for i=1:100
     pause(0.05);
 end
 dog_1.deltaVelocity
+dog_1.sheepMassHistory
