@@ -6,8 +6,8 @@ classdef Dog < handle
         velocity = zeros(1,2)
         sheepMass = zeros(1,4)% number of sheep in each quadrant
         deltaVelocity = zeros(1,2)
-        sheepMassHistory = [] %history of sheepMass over a sim
-        deltaVelocityHistory = [] %history of delta velocity over a sim
+        sheepMassHistory = zeros(100,4) %history of sheepMass over a sim
+        deltaVelocityHistory = zeros(100,2) %history of delta velocity over a sim
     end
     
     methods

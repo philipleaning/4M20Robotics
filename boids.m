@@ -53,12 +53,12 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:1000
+for i=1:100
     
     
     % For each boid, see if close enough to sheepdog (mouse) to be afraid
-    for i = 1:numel(boids_array)
-        boid = boids_array(i);
+    for j = 1:numel(boids_array)
+        boid = boids_array(j);
         % Get sheepdog (mouse pointer) position.
         pointMatrix = getMousePoint;
       
@@ -80,7 +80,7 @@ for i=1:1000
         dog_1.deltaVelocity = (mousePoint- dog_1.position)-dog_1.velocity;
         dog_1.velocity = mousePoint- dog_1.position;        
         dog_1.position = mousePoint;     
-        dog_1.deltaVelocity
+        dog_1.deltaVelocityHistory(i,:) = dog_1.deltaVelocity;
     end
      %{
     t = cputime;
@@ -164,3 +164,4 @@ for i=1:1000
     
     pause(0.05);
 end
+dog_1.deltaVelocity
