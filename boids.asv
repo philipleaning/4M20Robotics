@@ -18,8 +18,8 @@ clear all
 close all
 
 %% Parameters
-field_size = 500;
-number_of_boids = 20;
+field_size = 1000;
+number_of_boids = 1;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -44,6 +44,9 @@ hold on
 axis([0 field_size 0 field_size])
 plotHandle = plot(0,0, 'o');
 dog_1 = Dog();
+inputData = [0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0 ];
+inputData2 = zeros(5,5)
+inputData3 = zeros(5,2)
 % create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
@@ -53,8 +56,14 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:100
+for i=1:2000
     
+    if mod(i,100)==0 
+        for k = 1:number_of_boids
+            boids_array(k).position = [rand*field_size, rand*field_size];
+        end 
+        
+    end
     
     % For each boid, see if close enough to sheepdog (mouse) to be afraid
     for j = 1:numel(boids_array)
@@ -64,8 +73,8 @@ for i=1:100
       
         if ~isempty(pointMatrix)
             mousePoint = pointMatrix(1,1:2);
-                 
-            distance_from_dog = norm(boid.position - mousePoint);
+            %dog_1.position = mousePoint;     
+            distance_from_dog = norm(boid.position - dog_1.position);
             if distance_from_dog < 100 
                boid.afraid = true;
             else
@@ -77,14 +86,38 @@ for i=1:100
     if ~isempty(pointMatrix)
         pointMatrix = getMousePoint;
         mousePoint = pointMatrix(1,1:2);
+        
         dog_1.deltaVelocity = (mousePoint- dog_1.position)-dog_1.velocity;
         dog_1.velocity = mousePoint- dog_1.position;        
         dog_1.position = mousePoint;     
         dog_1.deltaVelocityHistory(i,:) = dog_1.deltaVelocity;
+        
+        dog_1.velocityHistory(i,:) = dog_1.velocity;
+        dog_1.positionHistory(i,:) = dog_1.position;
+        
         for x = 1:numel(boids_array)
-           b = boids_array(x); 
+           dog_1.sheepPosHistory(i,x)= dog_1.position(1)-b.position(1); 
+           dog_1.sheepPosHistory(i,x+1)= dog_1.position(2)-b.position(2);
+           b = boids_array(x);
+           distMass = norm(dog_1.position-b.position);
+           if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
+               
+               dog_1.sheepMassHistory(i,1)=dog_1.sheepMassHistory(i,1)+distMass;
+           end
+           if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
+               dog_1.sheepMassHistory(i,2)=dog_1.sheepMassHistory(i,2)+distMass;
+           end
+           if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
+               dog_1.sheepMassHistory(i,3)=dog_1.sheepMassHistory(i,3)+distMass;
+           end
+           if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
+               dog_1.sheepMassHistory(i,4)=dog_1.sheepMassHistory(i,4)+distMass;
+           end
         end
+        inputData = horzcat(dog_1.sheepMassHistory,dog_1.positionHistory);
+        inputData2 = horzcat(dog_1.sheepPosHistory,dog_1.positionHistory);
     end
+    
      %{
     t = cputime;
     surf(peaks(40));
@@ -113,8 +146,11 @@ for i=1:100
 
             % Boids tend to each other's velocities, 
             % Add 1/8th of difference between current boid velocity and perceived velocity of the swarm
-            v3 = (boid_perceived_vel(boids_array, boids_array(j)) - boid.velocity) / 8;
-            
+            if number_of_boids > 1
+                v3 = (boid_perceived_vel(boids_array, boids_array(j)) - boid.velocity) / 8;
+            else
+                v3 = 0
+            end
             % FEAR!!: If afraid add velocity away from dog
             if boid.afraid 
                fear_velocity = (boid.position - mousePoint)/norm(boid.position - mousePoint) * 0.8; 
@@ -163,8 +199,42 @@ for i=1:100
         boids_y_pos(j) = b.position(2);
     end
     
-    plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
+    %dog_1.deltaVelocity = newNNFUNC(inputData2(i,:));
     
+    acc = norm(dog_1.deltaVelocity);
+    if acc > 4
+          dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
+    end
+    dog_1.velocity = newNNFUNC(dog_1.sheepPosHistory(i,:));
+    speed = norm(dog_1.velocity);
+    if speed > 20
+          dog_1.velocity = (dog_1.velocity / speed) * 16;
+    end
+    dog_1.position = dog_1.position + dog_1.velocity;
+    
+    if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
+        dog_1.position(1) = 30;
+          dog_1.velocity(1) = dog_1.velocity(1) + 15;
+    end
+    if field_size - dog_1.position(1) < 30 && dog_1.velocity(1) > 0
+        dog_1.position(1) = field_size - 30;
+          dog_1.velocity(1) = dog_1.velocity(1) - 15;
+    end
+    if dog_1.position(2) < 30 && dog_1.velocity(2) < 0   
+        dog_1.position(2) = 30;
+          dog_1.velocity(2) = dog_1.velocity(2) + 15;     
+    end       
+    if field_size - dog_1.position(2) < 30 && dog_1.velocity(2) > 0
+        dog_1.position(2) = field_size - 30;
+          dog_1.velocity(2) = dog_1.velocity(2) - 15;      
+    end                       
+    
+    
+    plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
+    plot(dog_1.position(1), dog_1.position(2), 'x');
     pause(0.05);
 end
-dog_1.deltaVelocity
+dog_1.deltaVelocity;
+inputData3 = dog_1.sheepPosHistory;
+
+outputData = dog_1.velocityHistory;
