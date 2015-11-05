@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 1;
+number_of_boids = 2;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -56,7 +56,7 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:10000
+for i=1:2000
     
     if mod(i,200)==0 
         for k = 1:number_of_boids
@@ -99,7 +99,7 @@ for i=1:10000
            dog_1.sheepPosHistory(i,2*x-1)= dog_1.position(1)-b.position(1); 
            dog_1.sheepPosHistory(i,2*x)= dog_1.position(2)-b.position(2);
            b = boids_array(x);
-           distMass = norm(dog_1.position-b.position);
+           distMass = (1/norm(dog_1.position-b.position));
            if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
                
                dog_1.sheepMassHistory(i,1)=dog_1.sheepMassHistory(i,1)+distMass;
@@ -205,12 +205,12 @@ for i=1:10000
     if acc > 4
           dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
     end
-    %dog_1.velocity = newNNFUNC(dog_1.sheepMassHistory(i,:));
+    dog_1.velocity = newNNFUNC(dog_1.sheepMassHistory(i,:));
     speed = norm(dog_1.velocity);
     if speed > 200
           dog_1.velocity = (dog_1.velocity / speed) * 16;
     end
-    %dog_1.position = dog_1.position + dog_1.velocity;
+    dog_1.position = dog_1.position + dog_1.velocity;
     
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
         dog_1.position(1) = 30;
