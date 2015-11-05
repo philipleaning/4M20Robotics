@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 4;
+number_of_boids = 15;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -43,6 +43,7 @@ fig1 = figure(1);
 hold on
 axis([0 field_size 0 field_size])
 plotHandle = plot(0,0, 'o');
+dogPlot = plot(0,0,'x');
 dog_1 = Dog();
 inputData = [0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0 ];
 inputData2 = zeros(5,5)
@@ -58,7 +59,7 @@ fprintf('Running simulation...')
 
 for i=1:2000
     
-    if mod(i,200)==0 
+    if mod(i,400)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -231,7 +232,7 @@ for i=1:2000
     
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
-    plot(dog_1.position(1), dog_1.position(2), 'x');
+    dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2))
     pause(0.05);
 end
 dog_1.deltaVelocity;
