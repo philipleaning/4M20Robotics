@@ -207,26 +207,26 @@ for i=1:2000
     end
     dog_1.velocity = newNNFUNC(dog_1.sheepPosHistory(i,:));
     speed = norm(dog_1.velocity);
-    if speed > 20
+    if speed > 200
           dog_1.velocity = (dog_1.velocity / speed) * 16;
     end
     dog_1.position = dog_1.position + dog_1.velocity;
     
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
-        dog_1.position(1) = 30;
-          dog_1.velocity(1) = dog_1.velocity(1) + 15;
+        %dog_1.position(1) = 30;
+          %dog_1.velocity(1) = dog_1.velocity(1) + 15;
     end
     if field_size - dog_1.position(1) < 30 && dog_1.velocity(1) > 0
-        dog_1.position(1) = field_size - 30;
-          dog_1.velocity(1) = dog_1.velocity(1) - 15;
+        %dog_1.position(1) = field_size - 30;
+          %dog_1.velocity(1) = dog_1.velocity(1) - 15;
     end
     if dog_1.position(2) < 30 && dog_1.velocity(2) < 0   
-        dog_1.position(2) = 30;
-          dog_1.velocity(2) = dog_1.velocity(2) + 15;     
+        %dog_1.position(2) = 30;
+          %dog_1.velocity(2) = dog_1.velocity(2) + 15;     
     end       
     if field_size - dog_1.position(2) < 30 && dog_1.velocity(2) > 0
-        dog_1.position(2) = field_size - 30;
-          dog_1.velocity(2) = dog_1.velocity(2) - 15;      
+        %dog_1.position(2) = field_size - 30;
+          %dog_1.velocity(2) = dog_1.velocity(2) - 15;      
     end                       
     
     
