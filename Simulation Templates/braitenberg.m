@@ -23,7 +23,7 @@ r_w = 0.02;     %radius wheel
 d_s = 0.1;      %sensor distance
 rho = 10;       %light intensity to rotational speed constant
 dt = 1e-3;      %time increment
-N = 31400;
+N = 31400;      %time steps?
 
 %% Initialisation
 p_c = [0.6;0.6;pi/2];  %initial robot position and orientation
