@@ -6,8 +6,8 @@
 %   houseInputs - input data.
 %   houseTargets - target data.
  
-inputs = houseInputs;
-targets = houseTargets;
+inputs = [1 2 3 4];
+targets = [2 3 4 5];
  
 % Create a Fitting Network
 hiddenLayerSize = 10;
@@ -24,11 +24,11 @@ net.divideParam.testRatio = 15/100;
 % Test the Network
 outputs = net(inputs);
 errors = gsubtract(outputs,targets);
-performance = perform(net,targets,outputs)
+performance = perform(net,targets,outputs);
  
 % View the Network
-view(net)
- 
+% view(net);
+ net([1 1 1 1])
 % Plots
 % Uncomment these lines to enable various plots.
 % figure, plotperform(tr)
