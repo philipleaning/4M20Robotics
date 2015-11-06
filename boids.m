@@ -48,6 +48,7 @@ dog_1 = Dog();
 inputData = [0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0 ];
 inputData2 = zeros(5,5)
 inputData3 = zeros(5,20)
+sheepMassHistory2 = zeros(2000,4);
 % create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
@@ -57,9 +58,9 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:2000
+for i=1:1000
     
-    if mod(i,400)==0 
+    if mod(i,200)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -115,8 +116,8 @@ for i=1:2000
                dog_1.sheepMassHistory(i,4)=dog_1.sheepMassHistory(i,4)+distMass;
            end
         end
-        inputData = horzcat(dog_1.sheepMassHistory,dog_1.positionHistory);
-        inputData2 = horzcat(dog_1.sheepPosHistory,dog_1.positionHistory);
+        %inputData = horzcat(dog_1.sheepMassHistory,dog_1.positionHistory);
+        %inputData2 = horzcat(dog_1.sheepPosHistory,dog_1.positionHistory);
     end
     
      %{
@@ -206,7 +207,11 @@ for i=1:2000
     if acc > 4
           dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
     end
-    dog_1.velocity = newNNFUNC(dog_1.sheepMassHistory(i,:));
+    %dog_1.velocity = 0;
+    if i > 1
+        sheepMassHistory2(i-1) = dog_1.sheepMassHistory(i);
+        dog_1.velocity = newNNFUNC(horzcat(dog_1.sheepMassHistory(i,:),sheepMassHistory2(i)));
+    end
     speed = norm(dog_1.velocity);
     if speed > 200
           dog_1.velocity = (dog_1.velocity / speed) * 16;
@@ -236,6 +241,6 @@ for i=1:2000
     pause(0.05);
 end
 dog_1.deltaVelocity;
-inputData3 = dog_1.sheepMassHistory(:,:);
+inputData3 = horzcat(dog_1.sheepMassHistory,sheepMassHistory2);
 
 outputData = dog_1.velocityHistory;
