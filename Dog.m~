@@ -14,22 +14,25 @@ classdef Dog < handle
     end
     
     methods
-        % Automatically store history of variables.
         function obj = set.sheepMass(obj, newValue)
-            obj.sheepMassHistory = [obj.sheepMassHistory; 
-                                                newValue];
+            obj.sheepMass = newValue;
+            obj.sheepMassHistory = [obj.sheepMassHistory; newValue];
         end
         function obj = set.deltaVelocity(obj, newValue)
-            obj.deltaVelocityHistory = [obj.deltaVelocityHistory; 
-                                                        newValue];
+            obj.deltaVelocity = newValue;
+            obj.deltaVelocity = [obj.deltaVelocity; newValue];
         end
         function obj = set.position(obj, newValue)
-            obj.positionHistory = [obj.positionHistory; 
-                                              newValue];
+            obj.deltaVelocity = newValue;
+            obj.deltaVelocity = [obj.deltaVelocity; newValue];
         end
-        function obj = set.velocity(obj, newValue)
-            obj.velocityHistory = [obj.velocityHistory; 
-                                             newValue];
+        function obj = set.sheepPosHisto(obj, newValue)
+            obj.deltaVelocity = newValue;
+            obj.deltaVelocity = [obj.deltaVelocity; newValue];
+        end
+        function obj = set.velocityHistory(obj, newValue)
+            obj.deltaVelocity = newValue;
+            obj.deltaVelocity = [obj.deltaVelocity; newValue];
         end
     end
     
