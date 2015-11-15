@@ -15,15 +15,13 @@
 clc
 fprintf('Script executing...\n');
 close all
-clear all
+clearvars -except NN
 
 %% Parameters
 field_size = 500;
 number_of_boids = 10;
 boids_array = Boid.empty;
 max_speed = 5;  % boid maximum speed
-
-enable_log = true; % enable logging for training purposes?
 
 % Bottom left cage coordinates  which stops simulation once all boids are
 % inside. Top right coordinates are 500,500
@@ -33,9 +31,6 @@ cage_y = 450;
 %% Initialisation
 
 fprintf('Initialising simulation...\n');
-
-% assign to function mouseMove
-set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 
 % initialise the figure
 fig1 = figure(1);
@@ -55,42 +50,20 @@ for i = 1:number_of_boids
     boids_y_pos(i) = boids_array(i).position(2);
 end
 
-mousePoint = [0 0];
-
-plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
-sheepdogHandle.set('XData',mousePoint(1),'YData',mousePoint(2))
-
-% initialise the log. there is no way to pre-allocate this.
-history.mouse_pos = [];
-history.sheep_x = [];
-history.sheep_y = [];
-
+% initial starting point of sheepdog 
+mousePoint = [50 50];
 %% Simulation
 fprintf('Running simulation...\n')
 
-% Wait for the user to start interaction
-pointMatrix = getMousePoint; % Get sheepdog (mouse pointer) position.
-while isempty(pointMatrix)
-    pointMatrix = getMousePoint; % Get sheepdog (mouse pointer) position.
-    pause(0.1)
-end
-
-mousePoint = pointMatrix(1,1:2);
-while (max(mousePoint) > 500) || (min(mousePoint) < 0)
-    pointMatrix = getMousePoint;
-    mousePoint = pointMatrix(1,1:2);
-    pause(0.1)
-end
-
-for i=1:1000
+for i=1:10000
     
-    pointMatrix = getMousePoint; % Get sheepdog (mouse pointer) position.
-    if ~isempty(pointMatrix)
-        mousePoint = pointMatrix(1,1:2);
-        if enable_log
-            history.mouse_pos(end+1,:) = mousePoint;
-        end
-    end
+    NN = RunNN(NN,[boids_x_pos boids_y_pos mousePoint]);
+    NN.output
+    mousePoint = mousePoint + NN.output; % Get sheepdog position.
+    
+    % stop the sheepdog from exiting the field
+    mousePoint(mousePoint > 500) = 500;
+    mousePoint(mousePoint < 0) = 0;
     
     % Handle each boid at a time
     for j = 1:numel(boids_array)
@@ -175,11 +148,6 @@ for i=1:1000
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     sheepdogHandle.set('XData',mousePoint(1),'YData',mousePoint(2))
     
-    if enable_log
-        history.sheep_x(end+1,:) = boids_x_pos;
-        history.sheep_y(end+1,:) = boids_y_pos;
-    end
-    
     % Stop simulation once boids have reached above x,y because
     % they have been successfully herded
     if sum(boids_x_pos <= cage_x) == 0
@@ -188,16 +156,5 @@ for i=1:1000
         end
     end
     
-    pause(0.05);
+    pause(0.01);
 end
-
-pause(1.5);
-close all
-
-if size(history.sheep_x,1) ~= size(history.mouse_pos,1)
-    error('Training data is invalid! Mouse strayed outside field during training!')
-end
-
-temp = history.mouse_pos;
-temp(1,:) = [];
-history.mouse_velocity = temp - history.mouse_pos(1:end-1,:);
