@@ -6,10 +6,10 @@
 
 % names of the files training sessions
 filenames = ['trainset01';'trainset02';'trainset03';'trainset04';'trainset05'; ...
-    'trainset06';'trainset07';'trainset08';'trainset09';'trainset10'];
+    'trainset06';'trainset07';'trainset08';'trainset09';'trainset10';'trainset11'];
 
-learn_rate = 1e-6; % 5e-8 NN, 2e-7 WNN, 1e-6? DNN
-epochs = 10;
+learn_rate = 5e-7; % new: 5e-7   ### old:5e-8 NN, 4e-7 WNN, 5e-8 DNN
+epochs = 20; % 1epoch = 15secs, 240ep/hr
 
 %% Prepare Training Data
 
@@ -22,6 +22,11 @@ for i = 1:size(filenames,1)
     input_set(end,:) = [];
     output_set = [output_set; history.mouse_velocity];
 end
+
+% normalisation to allow network to operate (this must be un-normalised
+% during actual playback)
+output_set = output_set + 50;
+output_set = output_set./100;
 
 clear history
 
@@ -43,10 +48,10 @@ for cycle = 1:epochs
     fprintf('Epochs completed: %d\n',cycle);
     if mod(cycle,2) == 0 % plot every x number of epochs
         avg_error = TestNN(NN,input_set,output_set);
-        fprintf('\n         Test error (training set) = %.6f\n\n',avg_error);
+        fprintf('\n         Avg test error^2 (training set) = %.6f\n\n',avg_error);
         plot(cycle,avg_error, '.k')
         drawnow
-        if avg_error < 1e-4
+        if avg_error < 1e-6
             fprintf('\nFully converged!\n');
             break
         end
@@ -56,3 +61,6 @@ for cycle = 1:epochs
     end
 end
 hold off
+
+avg_error = TestNN(NN,input_set,output_set);
+fprintf('\n***** Actual average error = %.6f *****\n\n',sqrt(avg_error)*100);

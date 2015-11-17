@@ -51,15 +51,14 @@ for i = 1:number_of_boids
 end
 
 % initial starting point of sheepdog 
-mousePoint = [50 50];
+mousePoint = [0 0];
 %% Simulation
 fprintf('Running simulation...\n')
 
 for i=1:10000
     
     NN = RunNN(NN,[boids_x_pos boids_y_pos mousePoint]);
-    NN.output
-    mousePoint = mousePoint + NN.output; % Get sheepdog position.
+    mousePoint = mousePoint + (NN.output.*100 - 50) % Un-normalise the output (refer to training)
     
     % stop the sheepdog from exiting the field
     mousePoint(mousePoint > 500) = 500;
