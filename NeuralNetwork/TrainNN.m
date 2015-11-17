@@ -31,7 +31,7 @@ for cycle = 1:size(input_set,1)
         dy_dw = NN.x(:,:,L)'*dy_dxwb;
         w_new(:,:,L) = NN.w(:,:,L) + learn_rate*(dy_dw).*repmat(derr_gb,size(NN.w(:,:,L),1),1);
         b_new(:,:,L) = NN.b(:,:,L) + learn_rate*(dy_dxwb).*derr_gb;
-        derr_gb = derr_gb(1)*dy_dxwb(1)*NN.w(:,1,L)';
+        derr_gb = (NN.w(:,:,L)*(derr_gb.*dy_dxwb)')';
     end
     
     NN.w = w_new;

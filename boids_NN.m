@@ -57,7 +57,7 @@ fprintf('Running simulation...\n')
 
 for i=1:10000
     
-    NN = RunNN(NN,[boids_x_pos boids_y_pos mousePoint]);
+    NN = RunNN(NN,[boids_x_pos./500 boids_y_pos./500 mousePoint./500]); % normalise the input
     mousePoint = mousePoint + (NN.output.*100 - 50) % Un-normalise the output (refer to training)
     
     % stop the sheepdog from exiting the field

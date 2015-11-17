@@ -8,8 +8,8 @@
 filenames = ['trainset01';'trainset02';'trainset03';'trainset04';'trainset05'; ...
     'trainset06';'trainset07';'trainset08';'trainset09';'trainset10';'trainset11'];
 
-learn_rate = 2e-3; % 1e-3
-epochs = 20; % 1epoch = 15secs, 4ep/min, 240ep/hr
+learn_rate = 1e-2; % 1e-3
+epochs = 20; % 1epoch = 15secs, 240ep/hr
 
 %% Prepare Training Data
 
