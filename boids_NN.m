@@ -50,6 +50,17 @@ for i = 1:number_of_boids
     boids_y_pos(i) = boids_array(i).position(2);
 end
 
+grid_status = zeros(1,25);
+for y = 100:100:500
+    for x = 100:100:500
+        for j = 1:size(boids_x_pos,2)
+                if (boids_y_pos(j) > y-100) && (boids_y_pos(j) < y) && (boids_x_pos(j) > x-100) && (boids_x_pos(j) < x)
+                    grid_status((x/100)+(y/20 - 5)) = 1;
+                end
+        end
+    end
+end
+
 % initial starting point of sheepdog 
 mousePoint = [0 0];
 %% Simulation
@@ -57,7 +68,7 @@ fprintf('Running simulation...\n')
 
 for i=1:10000
     
-    NN = RunNN(NN,[boids_x_pos boids_y_pos mousePoint]);
+    NN = RunNN(NN,[grid_status mousePoint]);
     mousePoint = mousePoint + (NN.output.*100 - 50) % Un-normalise the output (refer to training)
     
     % stop the sheepdog from exiting the field
@@ -146,6 +157,16 @@ for i=1:10000
     
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     sheepdogHandle.set('XData',mousePoint(1),'YData',mousePoint(2))
+    
+    for y = 100:100:500
+        for x = 100:100:500
+            for j = 1:size(boids_x_pos,2)
+                    if (boids_y_pos(j) > y-100) && (boids_y_pos(j) < y) && (boids_x_pos(j) > x-100) && (boids_x_pos(j) < x)
+                        grid_status((x/100)+(y/20 - 5)) = 1;
+                    end
+            end
+        end
+    end
     
     % Stop simulation once boids have reached above x,y because
     % they have been successfully herded
