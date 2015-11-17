@@ -14,4 +14,4 @@ for i = 1:dim
     end
 end
 
-clearvars -except history
+%clearvars -except history

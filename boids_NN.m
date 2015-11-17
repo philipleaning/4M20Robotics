@@ -19,7 +19,7 @@ clearvars -except NN
 
 %% Parameters
 field_size = 500;
-number_of_boids = 10;
+number_of_boids = 2;
 boids_array = Boid.empty;
 max_speed = 5;  % boid maximum speed
 
@@ -68,7 +68,7 @@ fprintf('Running simulation...\n')
 
 for i=1:10000
     
-    NN = RunNN(NN,[grid_status mousePoint]);
+    NN = RunNN(NN,[grid_status mousePoint./500]); % normalise the input to the NN
     mousePoint = mousePoint + (NN.output.*100 - 50) % Un-normalise the output (refer to training)
     
     % stop the sheepdog from exiting the field

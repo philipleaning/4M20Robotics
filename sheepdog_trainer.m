@@ -8,8 +8,8 @@
 filenames = ['trainset01';'trainset02';'trainset03';'trainset04';'trainset05'; ...
     'trainset06';'trainset07';'trainset08';'trainset09';'trainset10';'trainset11'];
 
-learn_rate = 8e-5; % 5e-6
-epochs = 10; % 1epoch = 15secs, 4ep/min 240ep/hr
+learn_rate = 8e-4; % 1e-4
+epochs = 30; % 1epoch = 10secs, 6ep/min 360ep/hr
 
 %% Prepare Training Data
 
@@ -18,7 +18,7 @@ output_set = [];
 
 for i = 1:size(filenames,1)
     load(filenames(i,:));
-    input_set = [input_set; history.grid_status history.mouse_pos];
+    input_set = [input_set; history.grid_status history.mouse_pos./500]; % note the normalisation of the input
     input_set(end,:) = []; % take away last row since mouse velocity has one less row
     output_set = [output_set; history.mouse_velocity];
 end

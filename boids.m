@@ -19,7 +19,7 @@ clear all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 10;
+number_of_boids = 2;
 boids_array = Boid.empty;
 max_speed = 5;  % boid maximum speed
 
@@ -201,3 +201,5 @@ end
 temp = history.mouse_pos;
 temp(1,:) = [];
 history.mouse_velocity = temp - history.mouse_pos(1:end-1,:);
+
+gridmaker % call script to process log data into the grid matrix
