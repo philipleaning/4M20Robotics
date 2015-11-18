@@ -6,10 +6,12 @@
 
 % names of the files training sessions
 filenames = ['trainset01';'trainset02';'trainset03';'trainset04';'trainset05'; ...
-    'trainset06';'trainset07';'trainset08';'trainset09';'trainset10';'trainset11'];
+    'trainset06';'trainset07';'trainset08';'trainset09';'trainset10'; ...
+    'trainset11';'trainset12';'trainset13';'trainset14';'trainset15'; ...
+    'trainset16';'trainset17';'trainset18'];
 
-learn_rate = 8e-4; % 1e-4
-epochs = 30; % 1epoch = 10secs, 6ep/min 360ep/hr
+learn_rate = 4e-3; % 5e-3
+epochs = 2; % 1epoch = 15secs, 4ep/min 240ep/hr
 
 %% Prepare Training Data
 
@@ -18,7 +20,7 @@ output_set = [];
 
 for i = 1:size(filenames,1)
     load(filenames(i,:));
-    input_set = [input_set; history.grid_status history.mouse_pos./500]; % note the normalisation of the input
+    input_set = [input_set; history.sheep_x history.sheep_y history.mouse_pos]; % note the normalisation of the input
     input_set(end,:) = []; % take away last row since mouse velocity has one less row
     output_set = [output_set; history.mouse_velocity];
 end
@@ -27,6 +29,7 @@ end
 % during actual playback)
 output_set = output_set + 50;
 output_set = output_set./100;
+input_set = input_set./500;
 
 clear history
 
