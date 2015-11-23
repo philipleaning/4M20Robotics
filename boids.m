@@ -23,8 +23,6 @@ number_of_boids = 2;
 boids_array = Boid.empty;
 max_speed = 5;  % boid maximum speed
 
-enable_log = true; % enable logging for training purposes?
-
 % Bottom left cage coordinates  which stops simulation once all boids are
 % inside. Top right coordinates are 500,500
 cage_x = 450; 
@@ -87,9 +85,7 @@ for i=1:1000
     pointMatrix = getMousePoint; % Get sheepdog (mouse pointer) position.
     if ~isempty(pointMatrix)
         mousePoint = pointMatrix(1,1:2);
-        if enable_log
-            history.mouse_pos(end+1,:) = mousePoint;
-        end
+        history.mouse_pos(end+1,:) = mousePoint;
     end
     
     % Handle each boid at a time
@@ -175,10 +171,8 @@ for i=1:1000
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     sheepdogHandle.set('XData',mousePoint(1),'YData',mousePoint(2))
     
-    if enable_log
-        history.sheep_x(end+1,:) = boids_x_pos;
-        history.sheep_y(end+1,:) = boids_y_pos;
-    end
+    history.sheep_x(end+1,:) = boids_x_pos;
+    history.sheep_y(end+1,:) = boids_y_pos;
     
     % Stop simulation once boids have reached above x,y because
     % they have been successfully herded
@@ -188,7 +182,7 @@ for i=1:1000
         end
     end
     
-    pause(0.05);
+    pause(0.03);
 end
 
 pause(1.5);

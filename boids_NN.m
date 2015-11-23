@@ -50,19 +50,34 @@ for i = 1:number_of_boids
     boids_y_pos(i) = boids_array(i).position(2);
 end
 
+% initialise the log. there is no way to pre-allocate this.
+history.mouse_pos = [];
+history.sheep_x = [];
+history.sheep_y = [];
+
 % initial starting point of sheepdog 
 mousePoint = [10 10];
+
 %% Simulation
 fprintf('Running simulation...\n')
 
-for i=1:6000
+for i=1:300
     
     NN = RunNN(NN,[boids_x_pos./500 boids_y_pos./500 mousePoint./500]); % normalise the input to the NN
-    mousePoint = mousePoint + (NN.output.*100 - 50) % Un-normalise the output (refer to training)
+    mousePoint = mousePoint + (NN.output.*100 - 50); % Un-normalise the output (refer to training)
     
     % stop the sheepdog from exiting the field
     mousePoint(mousePoint > 500) = 500;
     mousePoint(mousePoint < 0) = 0;
+    
+    % if the sheepdog hits the right or top wall, it's unlikely to turn
+    % around, so just stop the simulation
+    if sum(mousePoint == 500)
+        break
+    end
+    
+    % logging
+    history.mouse_pos(end+1,:) = mousePoint;
     
     % Handle each boid at a time
     for j = 1:numel(boids_array)
@@ -147,6 +162,10 @@ for i=1:6000
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     sheepdogHandle.set('XData',mousePoint(1),'YData',mousePoint(2))
     
+    % logging
+    history.sheep_x(end+1,:) = boids_x_pos;
+    history.sheep_y(end+1,:) = boids_y_pos;
+    
     % Stop simulation once boids have reached above x,y because
     % they have been successfully herded
     if sum(boids_x_pos <= cage_x) == 0
@@ -157,3 +176,16 @@ for i=1:6000
     
     pause(0.01);
 end
+
+temp = history.mouse_pos;
+temp(1,:) = [];
+history.mouse_velocity = temp - history.mouse_pos(1:end-1,:);
+
+gridmaker % call script to process log data into the grid matrix
+
+% log the outcomes
+no = 10;
+while exist(strcat('log',num2str(no),'.mat'),'file')
+    no = no + 1;
+end
+save(strcat('log',num2str(no)),'history')

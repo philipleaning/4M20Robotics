@@ -12,8 +12,8 @@ clearvars -except history
 
 %% Playback Parameters
 
-fps = 30; 
-playback_speed = 2; % >0x to 4x (decimals accepted)
+fps = 60; 
+playback_speed = 3; % >0x to 4x (decimals accepted)
 
 
 %% Simulation Parameters (please edit to match playback data)

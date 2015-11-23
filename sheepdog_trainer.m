@@ -4,23 +4,48 @@
 
 %% Parameters
 
-% names of the files training sessions
-filenames = ['trainset01';'trainset02';'trainset03';'trainset04';'trainset05'; ...
-    'trainset06';'trainset07';'trainset08';'trainset09';'trainset10'; ...
-    'trainset11';'trainset12';'trainset13';'trainset14';'trainset15'; ...
-    'trainset16';'trainset17';'trainset18'];
+% Type of training: training or reinforcement
+training_type = 'training';
 
-learn_rate = 4e-3; % 5e-3
-epochs = 2; % 1epoch = 15secs, 4ep/min 240ep/hr
+learn_rate = 2e-3; % 5e-3
+epochs = floor(120/1.2); % 1epoch = ~50secs, 1.2ep/min 72ep/hr
 
 %% Prepare Training Data
+
+% prepare the file names for reading
+if strcmp(training_type,'training')
+    stem = 'trainset';
+    filenames = ['trainset01.mat'];
+elseif strcmp(training_type,'reinforcement')
+    stem = 'success';
+    filenames = ['success01.mat'];
+else
+    error('no/wrong training scheme selected.')
+end
+
+i = 2;
+while 1
+    if i < 10
+        filenames(i,:) = strcat(stem,'0',num2str(i),'.mat');
+    else
+        filenames(i,:) = strcat(stem,num2str(i),'.mat');
+    end
+    if exist(filenames(i,:),'file')
+        i = i + 1;
+    else
+        filenames(i,:) = [];
+        break
+    end
+end
+
+
 
 input_set = [];
 output_set = [];
 
 for i = 1:size(filenames,1)
     load(filenames(i,:));
-    input_set = [input_set; history.sheep_x history.sheep_y history.mouse_pos]; % note the normalisation of the input
+    input_set = [input_set; history.sheep_x history.sheep_y history.mouse_pos];
     input_set(end,:) = []; % take away last row since mouse velocity has one less row
     output_set = [output_set; history.mouse_velocity];
 end
