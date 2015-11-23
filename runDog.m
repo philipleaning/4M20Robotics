@@ -58,7 +58,7 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:1000
+for i=1:100
     
     if mod(i,200)==0 
         for k = 1:number_of_boids
@@ -75,7 +75,7 @@ for i=1:1000
       
         if ~isempty(pointMatrix)
             mousePoint = pointMatrix(1,1:2);
-            %dog_1.position = mousePoint;     
+            dog_1.position = mousePoint;     
             distance_from_dog = norm(boid.position - dog_1.position);
             if distance_from_dog < 100 
                boid.afraid = true;
@@ -89,35 +89,36 @@ for i=1:1000
         pointMatrix = getMousePoint;
         mousePoint = pointMatrix(1,1:2);
         
-        %dog_1.deltaVelocity = (mousePoint- dog_1.position)-dog_1.velocity;
-        %dog_1.velocity = mousePoint- dog_1.position;        
-        %dog_1.position = mousePoint;     
-        %dog_1.deltaVelocityHistory(i,:) = dog_1.deltaVelocity;
+        dog_1.position = mousePoint;     
+        dog_1.velocity = dog_1.position - dog_1.positionHistory(max(i-1,1),:);        
         
-        dog_1.velocityHistory(i,:) = dog_1.velocity;
-        dog_1.positionHistory(i,:) = dog_1.position;
+        dog_1.velocityHistory = [dog_1.velocityHistory; dog_1.velocity];
+        dog_1.positionHistory = [dog_1.positionHistory; dog_1.position];
         
+        % Reset sheep mass count to 0
+        dog_1.sheepMass = [0 0 0 0];
+        % Count sheep in quadrants
         for x = 1:numel(boids_array)
            dog_1.sheepPosHistory(i,2*x-1)= dog_1.position(1)-b.position(1); 
            dog_1.sheepPosHistory(i,2*x)= dog_1.position(2)-b.position(2);
            b = boids_array(x);
            distMass = (1/norm(dog_1.position-b.position));
+      
            if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
                
-               dog_1.sheepMassHistory(i,1)=dog_1.sheepMassHistory(i,1)+distMass;
+               dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
            end
            if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
-               dog_1.sheepMassHistory(i,2)=dog_1.sheepMassHistory(i,2)+distMass;
+               dog_1.sheepMass(2)=dog_1.sheepMass(2)+distMass;
            end
            if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
-               dog_1.sheepMassHistory(i,3)=dog_1.sheepMassHistory(i,3)+distMass;
+               dog_1.sheepMass(3)=dog_1.sheepMass(3)+distMass;
            end
            if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
-               dog_1.sheepMassHistory(i,4)=dog_1.sheepMassHistory(i,4)+distMass;
+               dog_1.sheepMass(4)=dog_1.sheepMass(4)+distMass;
            end
         end
-        %inputData = horzcat(dog_1.sheepMassHistory,dog_1.positionHistory);
-        %inputData2 = horzcat(dog_1.sheepPosHistory,dog_1.positionHistory);
+        dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
     end
     
      %{
@@ -200,18 +201,12 @@ for i=1:1000
         boids_x_pos(j) = b.position(1);
         boids_y_pos(j) = b.position(2);
     end
-    
-    %dog_1.deltaVelocity = newNNFUNC(inputData2(i,:));
-    
+      
     acc = norm(dog_1.deltaVelocity);
     if acc > 4
           dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
     end
-    %dog_1.velocity = 0;
-    if i > 1
-        sheepMassHistory2(i-1) = dog_1.sheepMassHistory(i);
-        dog_1.velocity = newNNFUNC(horzcat(dog_1.sheepMassHistory(i,:),sheepMassHistory2(i)));
-    end
+    
     speed = norm(dog_1.velocity);
     if speed > 200
           dog_1.velocity = (dog_1.velocity / speed) * 16;
@@ -240,7 +235,10 @@ for i=1:1000
     dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2))
     pause(0.05);
 end
-dog_1.deltaVelocity;
-inputData3 = horzcat(dog_1.sheepMassHistory,sheepMassHistory2);
 
-outputData = dog_1.velocityHistory;
+%% Save Data
+
+inputDataForNet = dog_1.sheepMassHistory;
+outputDataForNet = dog_1.velocityHistory;
+
+save('TrainingData', 'inputDataForNet', 'outputDataForNet')
