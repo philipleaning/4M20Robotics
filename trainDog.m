@@ -58,7 +58,7 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:100
+for i=1:1000
     
     if mod(i,200)==0 
         for k = 1:number_of_boids
