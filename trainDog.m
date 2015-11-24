@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 15;
+number_of_boids = 1;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -31,7 +31,7 @@ playback_speed = 1;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
 
 %% Initialisation
 
-fprintf('Initialising simulation...');
+fprintf('Initialising simulation...\n');
 
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
 
@@ -50,7 +50,7 @@ for i = 1:number_of_boids
 end
 
 %% Simulation
-fprintf('Running simulation...')
+fprintf('Running simulation...\n')
 
 for i=1:100
     %% Every 200 steps reset boid positions to random
@@ -98,7 +98,6 @@ for i=1:100
         for x = 1:numel(boids_array)
            b = boids_array(x);
            distMass = (1/norm(dog_1.position-b.position));
-      
            if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
                dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
            end

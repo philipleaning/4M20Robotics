@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 15;
+number_of_boids = 1;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -57,10 +57,7 @@ for i=1:1000
         
     end
     
-    %% Move Dog, count shobs in quadrants, update velocity with net
-    % Update dog position with velocity (set by net at end)
-    dog_1.position = dog_1.position + dog_1.velocity
-
+    %% Count shobs in quadrants, update velocity with net
     % For each boid, see if close enough to sheepdog (mouse) to be afraid
     for j = 1:numel(boids_array)
         boid = boids_array(j);      
@@ -71,29 +68,26 @@ for i=1:1000
            boid.afraid = false;
         end
     end
-    if true
-        % Reset sheep mass count to 0
-        dog_1.sheepMass = [0 0 0 0];
-        % Count sheep in quadrants
-        for x = 1:numel(boids_array)
-           b = boids_array(x);
-           distMass = (1/norm(dog_1.position-b.position));
-      
-           if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left 
-               dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
-           end
-           if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
-               dog_1.sheepMass(2)=dog_1.sheepMass(2)+distMass;
-           end
-           if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
-               dog_1.sheepMass(3)=dog_1.sheepMass(3)+distMass;
-           end
-           if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
-               dog_1.sheepMass(4)=dog_1.sheepMass(4)+distMass;
-           end
-        end
-        % Update dog velocity from net using sheep positions
-        dog_1.velocity = net(dog_1.sheepMass')';
+    
+    % Reset sheep mass count to 0
+    dog_1.sheepMass = [0 0 0 0];
+    % Count sheep in quadrants
+    for x = 1:numel(boids_array)
+       b = boids_array(x);
+       distMass = (1/norm(dog_1.position-b.position));
+
+       if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left 
+           dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
+       end
+       if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
+           dog_1.sheepMass(2)=dog_1.sheepMass(2)+distMass;
+       end
+       if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
+           dog_1.sheepMass(3)=dog_1.sheepMass(3)+distMass;
+       end
+       if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
+           dog_1.sheepMass(4)=dog_1.sheepMass(4)+distMass;
+       end
     end
 
     %% Apply Boid rules to scared Shobs
@@ -173,16 +167,15 @@ for i=1:1000
         boids_y_pos(j) = b.position(2);
     end
     
-    %% Bound Dog to field
-    acc = norm(dog_1.deltaVelocity);
-    if acc > 4
-          dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
+    %% Move Dog and Bound Dog to field
+    if i > 1
+        dog_1.velocity = net(dog_1.sheepMass')';
     end
-    
     speed = norm(dog_1.velocity);
     if speed > 200
           dog_1.velocity = (dog_1.velocity / speed) * 16;
     end
+    
     dog_1.position = dog_1.position + dog_1.velocity;
     
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
