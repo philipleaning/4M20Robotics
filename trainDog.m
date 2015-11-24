@@ -67,16 +67,13 @@ for i=1:2000
         % Get sheepdog (mouse pointer) position.
         pointMatrix = getMousePoint;
       
-        if ~isempty(pointMatrix)
-            mousePoint = pointMatrix(1,1:2);
-            dog_1.position = mousePoint;     
-            distance_from_dog = norm(boid.position - dog_1.position);
-            if distance_from_dog < 100 
-               boid.afraid = true;
-            else
-               boid.afraid = false;
-            end
-        end 
+        distance_from_dog = norm(boid.position - dog_1.position);
+        if distance_from_dog < 100 
+           boid.afraid = true;
+        else
+           boid.afraid = false;
+        end
+         
         
     end
     
@@ -86,10 +83,14 @@ for i=1:2000
         pointMatrix = getMousePoint;
         mousePoint = pointMatrix(1,1:2);
         
-        dog_1.position = mousePoint;     
-        if i > 1 
-            dog_1.velocity = dog_1.position - dog_1.positionHistory(end,:);
+        dog_1.velocity = mousePoint - dog_1.position;
+                dog_1.velocity
+
+        if norm(dog_1.velocity) > 4 
+           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 4; 
         end
+        dog_1.velocity
+        dog_1.position = dog_1.position + dog_1.velocity;     
         
         dog_1.velocityHistory = [dog_1.velocityHistory; dog_1.velocity];
         dog_1.positionHistory = [dog_1.positionHistory; dog_1.position];
@@ -225,4 +226,4 @@ delayedSMH = [0 0 0 0; dog_1.sheepMassHistory(2:end,:)];
 inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData10Runs1Boid2', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData10Runs1Boid3', 'inputDataForNet', 'outputDataForNet');
