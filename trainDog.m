@@ -23,10 +23,7 @@ number_of_boids = 15;
 boids_array = Boid.empty;
 max_speed = 5;
 
-%% Stored data for training NN
-
-
-% Playback Options
+%% Playback Options
 fps = 25;             % draw rate (usually around 25 gives a smooth playback)
 plot_paths = false;   % choose to plot paths of sheep? (very resource intensive! reduce draw rate, e.g. 5fps to help!)
 playback_speed = 1;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
@@ -45,11 +42,8 @@ axis([0 field_size 0 field_size])
 plotHandle = plot(0,0, 'o');
 dogPlot = plot(0,0,'x');
 dog_1 = Dog();
-inputData = [0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0; 0 0 0 0 0 0 ];
-inputData2 = zeros(5,5)
-inputData3 = zeros(5,20)
-sheepMassHistory2 = zeros(2000,4);
-% create boids
+
+%% Create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
     boids_array(i).position = [rand*field_size, rand*field_size];
@@ -59,7 +53,7 @@ end
 fprintf('Running simulation...')
 
 for i=1:1000
-    
+    %% Every 200 steps reset boid positions to random
     if mod(i,200)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
@@ -67,7 +61,7 @@ for i=1:1000
         
     end
     
-    % For each boid, see if close enough to sheepdog (mouse) to be afraid
+    %% For each boid, see if close enough to sheepdog (mouse) to be afraid
     for j = 1:numel(boids_array)
         boid = boids_array(j);
         % Get sheepdog (mouse pointer) position.
@@ -85,7 +79,10 @@ for i=1:1000
         end 
         
     end
+    
+    %% Move the dog and count sheep numbers in quadrants
     if ~isempty(pointMatrix)
+        % Move dog, store vel & pos in histories
         pointMatrix = getMousePoint;
         mousePoint = pointMatrix(1,1:2);
         
@@ -95,9 +92,9 @@ for i=1:1000
         dog_1.velocityHistory = [dog_1.velocityHistory; dog_1.velocity];
         dog_1.positionHistory = [dog_1.positionHistory; dog_1.position];
         
+        % Count sheep in quadrants
         % Reset sheep mass count to 0
         dog_1.sheepMass = [0 0 0 0];
-        % Count sheep in quadrants
         for x = 1:numel(boids_array)
            b = boids_array(x);
            distMass = (1/norm(dog_1.position-b.position));
@@ -118,7 +115,7 @@ for i=1:1000
         dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
     end
     
-    % For each boid: sum the vectors from applying the 3 rules
+    %% Apply boid rules
     for j = 1:numel(boids_array)
         % The current boid
         boid = boids_array(j);
@@ -168,7 +165,7 @@ for i=1:1000
        
     end
 
-    % Bound boids approximately to field, bounce them back with a velocity
+    %% Bound boids approximately to field, bounce them back with a velocity
     % change if they leave
     for j=1:numel(boids_array)
        b = boids_array(j);
@@ -194,6 +191,8 @@ for i=1:1000
         boids_y_pos(j) = b.position(2);
     end
     
+    %% Bound dog to field 
+    
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
         dog_1.position(1) = 30;
           %dog_1.velocity(1) = dog_1.velocity(1) + 15;
@@ -211,7 +210,8 @@ for i=1:1000
           %dog_1.velocity(2) = dog_1.velocity(2) - 15;      
     end                       
     
-    
+    %% Update Figures
+    % Separate plots for sheep and boids
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2))
     pause(0.05);
