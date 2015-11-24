@@ -52,7 +52,7 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:1000
+for i=1:100
     %% Every 200 steps reset boid positions to random
     if mod(i,200)==0 
         for k = 1:number_of_boids
@@ -222,4 +222,4 @@ end
 inputDataForNet = dog_1.sheepMassHistory;
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData', 'inputDataForNet', 'outputDataForNet')
+save('TrainingData', 'inputDataForNet', 'outputDataForNet');

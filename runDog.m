@@ -37,7 +37,7 @@ dogPlot = plot(0,0,'x');
 dog_1 = Dog();
 
 % Load neural net
-load('TrainedNet');
+load('TrainedNet', 'net');
 
 % create boids
 for i = 1:number_of_boids
