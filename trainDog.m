@@ -52,7 +52,7 @@ end
 %% Simulation
 fprintf('Running simulation...\n')
 
-for i=1:100
+for i=1:2000
     %% Every 200 steps reset boid positions to random
     if mod(i,200)==0 
         for k = 1:number_of_boids
@@ -87,7 +87,9 @@ for i=1:100
         mousePoint = pointMatrix(1,1:2);
         
         dog_1.position = mousePoint;     
-        dog_1.velocity = dog_1.position - dog_1.positionHistory(max(i-1,1),:);        
+        if i > 1 
+            dog_1.velocity = dog_1.position - dog_1.positionHistory(end,:);
+        end
         
         dog_1.velocityHistory = [dog_1.velocityHistory; dog_1.velocity];
         dog_1.positionHistory = [dog_1.positionHistory; dog_1.position];
@@ -217,8 +219,10 @@ for i=1:100
 end
 
 %% Save Data
+% Create delayed version of sheepMassHistory
+delayedSMH = [0 0 0 0; dog_1.sheepMassHistory(2:end,:)];
 
-inputDataForNet = dog_1.sheepMassHistory;
+inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData10Runs1Boid2', 'inputDataForNet', 'outputDataForNet');
