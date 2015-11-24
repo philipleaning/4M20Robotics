@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 1;
+number_of_boids = 10;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -226,4 +226,4 @@ delayedSMH = [0 0 0 0; dog_1.sheepMassHistory(2:end,:)];
 inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData10Runs1Boid3', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData10BoidsEncircling', 'inputDataForNet', 'outputDataForNet');

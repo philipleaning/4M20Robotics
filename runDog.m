@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 1;
+number_of_boids = 10;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -50,7 +50,7 @@ fprintf('Running simulation...')
 
 for i=1:1000
     %% Reload shob positions every 500 steps
-    if mod(i,200)==0 
+    if mod(i,1000)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
