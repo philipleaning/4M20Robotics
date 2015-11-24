@@ -1,7 +1,7 @@
 
 %% Load Training Data
 % Load '.mat' data is located in
-fileNames = ['TrainingData10BoidsEncircling8speedcap'];
+fileNames = ['TrainingData20tickMemoryEncircling'];
 load(fileNames);
 % Store data in local variables in correct format (each step as collumns)
 input = [];
@@ -21,7 +21,7 @@ t = output;
 trainFcn = 'trainlm';  % Levenberg-Marquardt backpropagation.
 
 % Create a Fitting Network
-hiddenLayerSize = 5;
+hiddenLayerSize = 16;
 net = fitnet(hiddenLayerSize,trainFcn);
 
 % Setup Division of Data for Training, Validation, Testing

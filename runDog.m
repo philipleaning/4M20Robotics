@@ -168,8 +168,8 @@ for i=1:1000
     end
     
     %% Move Dog and Bound Dog to field
-    if i > 1
-        input = [dog_1.sheepMass dog_1.sheepMassHistory(end,:)];
+    if i > 20
+        input = [dog_1.sheepMass dog_1.sheepMassHistory(end-9,:) dog_1.sheepMassHistory(end-19,:)];
         dog_1.velocity = net(input')';
     end
     dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];

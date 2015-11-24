@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 1;
+number_of_boids = 10;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -52,9 +52,9 @@ end
 %% Simulation
 fprintf('Running simulation...\n')
 
-for i=1:600
+for i=1:2000
     %% Every 200 steps reset boid positions to random
-    if mod(i,200)==0 
+    if mod(i,400)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -67,16 +67,13 @@ for i=1:600
         % Get sheepdog (mouse pointer) position.
         pointMatrix = getMousePoint;
       
-        if ~isempty(pointMatrix)
-            mousePoint = pointMatrix(1,1:2);
-            dog_1.position = mousePoint;     
-            distance_from_dog = norm(boid.position - dog_1.position);
-            if distance_from_dog < 100 
-               boid.afraid = true;
-            else
-               boid.afraid = false;
-            end
-        end 
+        distance_from_dog = norm(boid.position - dog_1.position);
+        if distance_from_dog < 100 
+           boid.afraid = true;
+        else
+           boid.afraid = false;
+        end
+         
         
     end
     
@@ -86,10 +83,14 @@ for i=1:600
         pointMatrix = getMousePoint;
         mousePoint = pointMatrix(1,1:2);
         
-        dog_1.position = mousePoint;     
-        if i > 1 
-            dog_1.velocity = dog_1.position - dog_1.positionHistory(i-1,:);
+        dog_1.velocity = mousePoint - dog_1.position;
+                dog_1.velocity
+
+        if norm(dog_1.velocity) > 8 
+           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 8; 
         end
+        dog_1.velocity
+        dog_1.position = dog_1.position + dog_1.velocity;     
         
         dog_1.velocityHistory = [dog_1.velocityHistory; dog_1.velocity];
         dog_1.positionHistory = [dog_1.positionHistory; dog_1.position];
@@ -220,9 +221,9 @@ end
 
 %% Save Data
 % Create delayed version of sheepMassHistory
-delayedSMH = [0 0 0 0; dog_1.sheepMassHistory(2:end,:)];
+delayedSMH = [zeros(10,4); dog_1.sheepMassHistory(11:end,:)];
 
 inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData10Runs1Boid', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData10tickMemoryTopRightHerd', 'inputDataForNet', 'outputDataForNet');
