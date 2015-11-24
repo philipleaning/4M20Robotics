@@ -175,8 +175,8 @@ for i=1:1000
     dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
   
     speed = norm(dog_1.velocity);
-    if speed > 4
-          dog_1.velocity = (dog_1.velocity / speed) * 4;
+    if speed > 8
+          dog_1.velocity = (dog_1.velocity / speed) * 8;
     end
     dog_1.velocity
     dog_1.position = dog_1.position + dog_1.velocity;

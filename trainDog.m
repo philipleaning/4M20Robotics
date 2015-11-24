@@ -86,8 +86,8 @@ for i=1:2000
         dog_1.velocity = mousePoint - dog_1.position;
                 dog_1.velocity
 
-        if norm(dog_1.velocity) > 4 
-           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 4; 
+        if norm(dog_1.velocity) > 8 
+           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 8; 
         end
         dog_1.velocity
         dog_1.position = dog_1.position + dog_1.velocity;     
@@ -226,4 +226,4 @@ delayedSMH = [0 0 0 0; dog_1.sheepMassHistory(2:end,:)];
 inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData10BoidsEncircling', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData10BoidsEncircling8speedcap', 'inputDataForNet', 'outputDataForNet');
