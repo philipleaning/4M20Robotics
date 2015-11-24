@@ -18,7 +18,7 @@ clear all
 close all
 
 %% Parameters
-field_size = 100;
+field_size = 200;
 number_of_boids = 1;
 boids_array = Boid.empty;
 max_speed = 5;
@@ -50,7 +50,7 @@ fprintf('Running simulation...')
 
 for i=1:1000
     %% Reload shob positions every 500 steps
-    if mod(i,100)==0 
+    if mod(i,200)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -175,10 +175,10 @@ for i=1:1000
     dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
   
     speed = norm(dog_1.velocity);
-    if speed > 200
-          dog_1.velocity = (dog_1.velocity / speed) * 16;
+    if speed > 4
+          dog_1.velocity = (dog_1.velocity / speed) * 4;
     end
-    
+    dog_1.velocity
     dog_1.position = dog_1.position + dog_1.velocity;
     
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
