@@ -99,13 +99,10 @@ for i=1:1000
         dog_1.sheepMass = [0 0 0 0];
         % Count sheep in quadrants
         for x = 1:numel(boids_array)
-           dog_1.sheepPosHistory(i,2*x-1)= dog_1.position(1)-b.position(1); 
-           dog_1.sheepPosHistory(i,2*x)= dog_1.position(2)-b.position(2);
            b = boids_array(x);
            distMass = (1/norm(dog_1.position-b.position));
       
            if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
-               
                dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
            end
            if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
@@ -121,11 +118,6 @@ for i=1:1000
         dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
     end
     
-     %{
-    t = cputime;
-    surf(peaks(40));
-    e = cputime-t
-    %}
     % For each boid: sum the vectors from applying the 3 rules
     for j = 1:numel(boids_array)
         % The current boid
@@ -201,17 +193,6 @@ for i=1:1000
         boids_x_pos(j) = b.position(1);
         boids_y_pos(j) = b.position(2);
     end
-      
-    acc = norm(dog_1.deltaVelocity);
-    if acc > 4
-          dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
-    end
-    
-    speed = norm(dog_1.velocity);
-    if speed > 200
-          dog_1.velocity = (dog_1.velocity / speed) * 16;
-    end
-    dog_1.position = dog_1.position + dog_1.velocity;
     
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
         dog_1.position(1) = 30;

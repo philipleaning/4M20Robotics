@@ -49,9 +49,9 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:100
+for i=1:1000
     
-    if mod(i,200)==0 
+    if mod(i,500)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -127,7 +127,7 @@ for i=1:100
             if number_of_boids > 1
                 v3 = (boid_perceived_vel(boids_array, boids_array(j)) - boid.velocity) / 8;
             else
-                v3 = 0
+                v3 = 0;
             end
             % FEAR!!: If afraid add velocity away from dog
             if boid.afraid 

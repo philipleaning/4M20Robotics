@@ -8,8 +8,8 @@ output = [];
 input = [input inputDataForNet'];
 output = [output outputDataForNet'];
 
-net = fitnet(10);
-[net,tr] = train(net,input,output);
+net = feedforwardnet(10);
+[net,tr] = trainlm(net,input,output);
 
 y = net(inputDataForNet');
 
