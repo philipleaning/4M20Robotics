@@ -24,7 +24,6 @@ boids_array = Boid.empty;
 max_speed = 5;
 
 %% Initialisation
-
 fprintf('Initialising simulation...');
 
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
@@ -50,7 +49,7 @@ end
 fprintf('Running simulation...')
 
 for i=1:1000
-    
+    %% Reload shob positions every 500 steps
     if mod(i,500)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
@@ -58,6 +57,7 @@ for i=1:1000
         
     end
     
+    %% Move Dog, count shobs in quadrants, update velocity with net
     % Update dog position with velocity (set by net at end)
     dog_1.position = dog_1.position + dog_1.velocity
 
@@ -95,12 +95,8 @@ for i=1:1000
         % Update dog velocity from net using sheep positions
         dog_1.velocity = net(dog_1.sheepMass')';
     end
-    
-     %{
-    t = cputime;
-    surf(peaks(40));
-    e = cputime-t
-    %}
+
+    %% Apply Boid rules to scared Shobs
     % For each boid: sum the vectors from applying the 3 rules
     for j = 1:numel(boids_array)
         % The current boid
@@ -151,7 +147,7 @@ for i=1:1000
        
     end
 
-    % Bound boids approximately to field, bounce them back with a velocity
+    %% Bound boids approximately to field, bounce them back with a velocity
     % change if they leave
     for j=1:numel(boids_array)
        b = boids_array(j);
@@ -176,7 +172,8 @@ for i=1:1000
         boids_x_pos(j) = b.position(1);
         boids_y_pos(j) = b.position(2);
     end
-      
+    
+    %% Bound Dog to field
     acc = norm(dog_1.deltaVelocity);
     if acc > 4
           dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
@@ -205,7 +202,7 @@ for i=1:1000
           %dog_1.velocity(2) = dog_1.velocity(2) - 15;      
     end                       
     
-    
+    %% Update figures
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2))
     pause(0.05);

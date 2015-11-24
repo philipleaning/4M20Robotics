@@ -23,17 +23,7 @@ number_of_boids = 15;
 boids_array = Boid.empty;
 max_speed = 5;
 
-%% Stored data for training NN
-
-
-% Playback Options
-fps = 25;             % draw rate (usually around 25 gives a smooth playback)
-plot_paths = false;   % choose to plot paths of sheep? (very resource intensive! reduce draw rate, e.g. 5fps to help!)
-playback_speed = 1;   % playback speed for animation. 1x, 2x, 5x, 10x, etc.
-
-
 %% Initialisation
-
 fprintf('Initialising simulation...');
 
 set (gcf, 'WindowButtonMotionFcn', @mouseMove);
@@ -46,6 +36,9 @@ plotHandle = plot(0,0, 'o');
 dogPlot = plot(0,0,'x');
 dog_1 = Dog();
 
+% Load neural net
+load('TrainedNet');
+
 % create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
@@ -55,15 +48,16 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:100
-    
-    if mod(i,200)==0 
+for i=1:1000
+    %% Reload shob positions every 500 steps
+    if mod(i,500)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
         
     end
     
+    %% Move Dog
     % Update dog position with velocity (set by net at end)
     dog_1.position = dog_1.position + dog_1.velocity
 
@@ -99,7 +93,7 @@ for i=1:100
            end
         end
         % Update dog velocity from net using sheep positions
-        dog_1.velocity = net(dog_1.sheepMass);
+        dog_1.velocity = net(dog_1.sheepMass')';
     end
     
      %{
@@ -133,11 +127,11 @@ for i=1:100
             if number_of_boids > 1
                 v3 = (boid_perceived_vel(boids_array, boids_array(j)) - boid.velocity) / 8;
             else
-                v3 = 0
+                v3 = 0;
             end
             % FEAR!!: If afraid add velocity away from dog
             if boid.afraid 
-               fear_velocity = (boid.position - mousePoint)/norm(boid.position - mousePoint) * 0.8; 
+               fear_velocity = (boid.position - dog_1.position)/norm(boid.position - dog_1.position) * 0.8; 
             end
             % Update boid velocity by summing contribution from each rule
             boid.velocity = boid.velocity + v1 + v2 + v3 + fear_velocity;
