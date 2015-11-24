@@ -18,7 +18,7 @@ clear all
 close all
 
 %% Parameters
-field_size = 200;
+field_size = 500;
 number_of_boids = 1;
 boids_array = Boid.empty;
 max_speed = 5;
