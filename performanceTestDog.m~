@@ -26,8 +26,6 @@ max_speed = 5;
 %% Initialisation
 fprintf('Initialising simulation...');
 
-set (gcf, 'WindowButtonMotionFcn', @mouseMove);
-
 % initialise the figure
 fig1 = figure(1);
 hold on
@@ -39,6 +37,9 @@ dog_1 = Dog();
 % Load neural net
 load('TrainedNet', 'net');
 
+% Store variance of each trial
+trialVariances = [];
+
 % create boids
 for i = 1:number_of_boids
     boids_array(end+1) = Boid();
@@ -48,12 +49,13 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for i=1:1000
-    %% Reload shob positions every 500 steps
-    if mod(i,1000)==0 
+for i=1:5000
+    %% Reload shob and positions every 500 steps. Store variance of shobs
+    if mod(i,500) == 0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
+        dog_1.position = [0 0];
         
     end
     
