@@ -1,7 +1,7 @@
 
 %% Load Training Data
 % Load '.mat' data is located in
-fileNames = ['TrainingData20tickMemoryEncircling'];
+fileNames = ['TrainingDataExact5Shobs'];
 load(fileNames);
 % Store data in local variables in correct format (each step as collumns)
 input = [];

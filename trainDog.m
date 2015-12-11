@@ -54,7 +54,7 @@ fprintf('Running simulation...\n')
 
 for i=1:2000
     %% Every 200 steps reset boid positions to random
-    if mod(i,400)==0 
+    if mod(i,2000)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -86,8 +86,8 @@ for i=1:2000
         dog_1.velocity = mousePoint - dog_1.position;
                 dog_1.velocity
 
-        if norm(dog_1.velocity) > 8 
-           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 8; 
+        if norm(dog_1.velocity) > 50 
+           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 50; 
         end
         dog_1.velocity
         dog_1.position = dog_1.position + dog_1.velocity;     
@@ -221,10 +221,10 @@ end
 
 %% Save Data
 % Create delayed version of sheepMassHistory
-delayedSMH = [zeros(10,4); dog_1.sheepMassHistory(11:end,:)];
-delayedSMH20 = [zeros(20,4); dog_1.sheepMassHistory(21:end,:)];
+%delayedSMH = [zeros(10,4); dog_1.sheepMassHistory(11:end,:)];
+%delayedSMH20 = [zeros(20,4); dog_1.sheepMassHistory(21:end,:)];
 
-inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH, delayedSMH20);
+inputDataForNet = horzcat(dog_1.sheepMassHistory);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData20tickMemoryEncircling', 'inputDataForNet', 'outputDataForNet');
+save('TrainingDataHerdingDemo', 'inputDataForNet', 'outputDataForNet');

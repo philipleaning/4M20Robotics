@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 10;
+number_of_boids = 5;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -54,7 +54,7 @@ fprintf('Running simulation...\n')
 
 for i=1:2000
     %% Every 200 steps reset boid positions to random
-    if mod(i,400)==0 
+    if mod(i,200)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -86,8 +86,8 @@ for i=1:2000
         dog_1.velocity = mousePoint - dog_1.position;
                 dog_1.velocity
 
-        if norm(dog_1.velocity) > 8 
-           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 8; 
+        if norm(dog_1.velocity) > 50 
+           dog_1.velocity = (dog_1.velocity / norm(dog_1.velocity)) * 50; 
         end
         dog_1.velocity
         dog_1.position = dog_1.position + dog_1.velocity;     
@@ -97,24 +97,12 @@ for i=1:2000
         
         % Count sheep in quadrants
         % Reset sheep mass count to 0
-        dog_1.sheepMass = [0 0 0 0];
+        sheepPositions = [];
         for x = 1:numel(boids_array)
            b = boids_array(x);
-           distMass = (1/norm(dog_1.position-b.position));
-           if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left
-               dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
-           end
-           if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
-               dog_1.sheepMass(2)=dog_1.sheepMass(2)+distMass;
-           end
-           if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
-               dog_1.sheepMass(3)=dog_1.sheepMass(3)+distMass;
-           end
-           if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
-               dog_1.sheepMass(4)=dog_1.sheepMass(4)+distMass;
-           end
+           sheepPositions = [sheepPositions b.position];
         end
-        dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
+        dog_1.sheepPosHistory = [dog_1.sheepPosHistory; sheepPositions];
     end
     
     %% Apply boid rules
@@ -221,9 +209,10 @@ end
 
 %% Save Data
 % Create delayed version of sheepMassHistory
-delayedSMH = [zeros(10,4); dog_1.sheepMassHistory(11:end,:)];
+%delayedSMH = [zeros(10,4); dog_1.sheepMassHistory(11:end,:)];
+%delayedSMH20 = [zeros(20,4); dog_1.sheepMassHistory(21:end,:)];
 
-inputDataForNet = horzcat(dog_1.sheepMassHistory, delayedSMH);
+inputDataForNet = horzcat(dog_1.sheepPosHistory);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingData10tickMemoryTopRightHerd', 'inputDataForNet', 'outputDataForNet');
+save('TrainingDataExact5Shobs', 'inputDataForNet', 'outputDataForNet');

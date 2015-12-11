@@ -19,7 +19,7 @@ close all
 
 %% Parameters
 field_size = 500;
-number_of_boids = 1;
+number_of_boids = 5;
 boids_array = Boid.empty;
 max_speed = 5;
 
@@ -50,7 +50,7 @@ fprintf('Running simulation...')
 
 for i=1:1000
     %% Reload shob positions every 500 steps
-    if mod(i,500)==0 
+    if mod(i,100)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
@@ -69,25 +69,10 @@ for i=1:1000
         end
     end
     
-    % Reset sheep mass count to 0
-    dog_1.sheepMass = [0 0 0 0];
-    % Count sheep in quadrants
+   sheepPositions = [];
     for x = 1:numel(boids_array)
        b = boids_array(x);
-       distMass = (1/norm(dog_1.position-b.position));
-
-       if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left 
-           dog_1.sheepMass(1)=dog_1.sheepMass(1)+distMass;
-       end
-       if b.position(1) > dog_1.position(1) && b.position(2) < dog_1.position(2) % bot right
-           dog_1.sheepMass(2)=dog_1.sheepMass(2)+distMass;
-       end
-       if b.position(1) < dog_1.position(1) && b.position(2) > dog_1.position(2) % top left
-           dog_1.sheepMass(3)=dog_1.sheepMass(3)+distMass;
-       end
-       if b.position(1) > dog_1.position(1) && b.position(2) > dog_1.position(2) % top right
-           dog_1.sheepMass(4)=dog_1.sheepMass(4)+distMass;
-       end
+       sheepPositions = [sheepPositions b.position];
     end
 
     %% Apply Boid rules to scared Shobs
@@ -111,7 +96,6 @@ for i=1:1000
                    end
                end
             end
-
             % Boids tend to each other's velocities, 
             % Add 1/8th of difference between current boid velocity and perceived velocity of the swarm
             if number_of_boids > 1
@@ -168,17 +152,17 @@ for i=1:1000
     end
     
     %% Move Dog and Bound Dog to field
-    if i > 1
-        input = horzcat(dog_1.sheepMass, 
-        dog_1.velocity = net(dog_1.sheepMass')';
+    if i > 20
+        input = sheepPositions;
+        dog_1.velocity = net(input')';
     end
     dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
   
     speed = norm(dog_1.velocity);
-    if speed > 200
+    if speed > 16
           dog_1.velocity = (dog_1.velocity / speed) * 16;
     end
-    
+    dog_1.velocity
     dog_1.position = dog_1.position + dog_1.velocity;
     
     if dog_1.position(1) < 30 && dog_1.velocity(1) < 0

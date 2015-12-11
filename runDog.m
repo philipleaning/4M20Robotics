@@ -111,7 +111,6 @@ for i=1:1000
                    end
                end
             end
-
             % Boids tend to each other's velocities, 
             % Add 1/8th of difference between current boid velocity and perceived velocity of the swarm
             if number_of_boids > 1
@@ -169,14 +168,14 @@ for i=1:1000
     
     %% Move Dog and Bound Dog to field
     if i > 20
-        input = [dog_1.sheepMass dog_1.sheepMassHistory(end-9,:) dog_1.sheepMassHistory(end-19,:)];
+        input = [dog_1.sheepMass];% dog_1.sheepMassHistory(end-9,:)];
         dog_1.velocity = net(input')';
     end
     dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
   
     speed = norm(dog_1.velocity);
-    if speed > 8
-          dog_1.velocity = (dog_1.velocity / speed) * 8;
+    if speed > 16
+          dog_1.velocity = (dog_1.velocity / speed) * 16;
     end
     dog_1.velocity
     dog_1.position = dog_1.position + dog_1.velocity;
