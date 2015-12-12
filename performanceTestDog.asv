@@ -69,9 +69,7 @@ for n=1:numel(nets)
     trialVariances = [];
     
     for i=1:600
-        if mod(i,100) == 0 
-            i
-        end
+        i
         %% Reload shob and positions every 500 steps. Store variance of shobs
         if mod(i,200) == 0 
             for k = 1:number_of_boids
@@ -164,7 +162,7 @@ for n=1:numel(nets)
             end
 
         end
-        
+
         %% Bound boids approximately to field, bounce them back with a velocity
         % change if they leave
         for j=1:numel(boids_array)
@@ -190,7 +188,7 @@ for n=1:numel(nets)
             boids_x_pos(j) = b.position(1);
             boids_y_pos(j) = b.position(2);
         end
-        
+
         %% Move Dog and Bound Dog to field
         if i > 20
             input = [dog_1.sheepMass];% dog_1.sheepMassHistory(end-9,:)];
@@ -202,7 +200,7 @@ for n=1:numel(nets)
         if speed > 16
               dog_1.velocity = (dog_1.velocity / speed) * 16;
         end
-        dog_1.velocity;
+        dog_1.velocity
         dog_1.position = dog_1.position + dog_1.velocity;
 
         if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
@@ -221,7 +219,7 @@ for n=1:numel(nets)
             dog_1.position(2) = field_size - 30;
               %dog_1.velocity(2) = dog_1.velocity(2) - 15;      
         end                       
-        
+        a = 3
         %% Update figures
         plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos);
         dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2));
