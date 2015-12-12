@@ -52,13 +52,13 @@ end
 %% Simulation
 fprintf('Running simulation...\n')
 
-for i=1:2000
+for i=1:200
     %% Every 200 steps reset boid positions to random
-    if mod(i,2000)==0 
+    if mod(i,200)==0 
         for k = 1:number_of_boids
             boids_array(k).position = [rand*field_size, rand*field_size];
         end 
-        
+        dog_1.position = [0,0]
     end
     
     %% For each boid, see if close enough to sheepdog (mouse) to be afraid
@@ -227,4 +227,8 @@ end
 inputDataForNet = horzcat(dog_1.sheepMassHistory);
 outputDataForNet = dog_1.velocityHistory;
 
-save('TrainingDataHerdingDemo', 'inputDataForNet', 'outputDataForNet');
+
+save('TrainingData001_5RoundsOf200', 'inputDataForNet', 'outputDataForNet');
+inputDataForNet = inputDataForNet(1:100,:)
+outputDataForNet = outputDataForNet(1:100,:)
+save('TrainingData001_2RoundsOf200', 'inputDataForNet', 'outputDataForNet');

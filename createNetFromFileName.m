@@ -12,7 +12,7 @@ output = [];
 input = [input inputDataForNet'];
 output = [output outputDataForNet'];
 
-x = input
+x = input;
 t = output;
 
 %% Net Creation and Training

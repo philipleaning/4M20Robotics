@@ -35,11 +35,14 @@ dogPlot = plot(0,0,'x');
 dog_1 = Dog();
 
 % Load neural net
-load('TrainedNet', 'net');
+%load('TrainedNet', 'net');
+load TrainingData5RoundsOf200
+
 
 % Create nets
-net1 = createNetFromFileName('Training Data Name')
-net2 = createNetFromFileName('Training Data 2 Name')
+%nets = net.empty()
+net1 = createNetFromFileName('TrainingData001_5RoundsOf200');
+net2 = createNetFromFileName('TrainingData001_2RoundsOf200');
 
 % Stick in array
 nets = [net1 net2];
@@ -56,19 +59,21 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for net = nets
+for i = 1,size(nets)
+    net = net1
+    fprintf('here')
     % Store variance of each trial
     trialVariances = [];
     
-    for i=1:5000
+    for i=1:600
         %% Reload shob and positions every 500 steps. Store variance of shobs
-        if mod(i,500) == 0 
+        if mod(i,200) == 0 
             for k = 1:number_of_boids
                 boids_array(k).position = [rand*field_size, rand*field_size];
             end 
             dog_1.position = [0 0];
             currentVariance = 1;
-            trialVariances = [trialVariances; currentVariance]
+            trialVariances = [trialVariances; currentVariance];
         end
 
         %% Count shobs in quadrants, update velocity with net

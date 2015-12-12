@@ -208,8 +208,8 @@ for i=1:1000
           dog_1.deltaVelocity = (dog_1.deltaVelocity / acc) * 7;
     end
     %dog_1.velocity = 0;
-    if i > 1
-        sheepMassHistory2(i-1) = dog_1.sheepMassHistory(i);
+    if i > 5
+        sheepMassHistory2(i-5) = dog_1.sheepMassHistory(i);
         dog_1.velocity = newNNFUNC(horzcat(dog_1.sheepMassHistory(i,:),sheepMassHistory2(i)));
     end
     speed = norm(dog_1.velocity);
