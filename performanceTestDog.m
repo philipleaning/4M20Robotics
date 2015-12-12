@@ -38,11 +38,11 @@ dog_1 = Dog();
 load('TrainedNet', 'net');
 
 % Create nets
-net1 = createNetFromFileName('Training Data Name')
-net2 = createNetFromFileName('Training Data 2 Name')
+net1 = createNetFromFileName('Training Data Name');
+net2 = createNetFromFileName('Training Data 2 Name');
 
 % Stick in array
-nets = [net1 net2];
+nets = {net1 net2};
 
 % Store end variance of each net
 endVarianceForEachNet = [];
@@ -56,7 +56,8 @@ end
 %% Simulation
 fprintf('Running simulation...')
 
-for net = nets
+for n=1:numel(nets)
+    net = nets{n};
     % Store variance of each trial
     trialVariances = [];
     
