@@ -57,7 +57,6 @@ fprintf('Running simulation...\n')
 for i=1:15000
     %% Every 200 steps reset boid positions to random
     if mod(i,300)==0 
-        i/300
         dog_1.position = [rand*field_size, rand*field_size];
         dog_1.position
         dog_1.velocity = [0, 0];
@@ -228,7 +227,7 @@ for i=1:15000
     plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos)
     dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2))
     pause(0.05);
-    if mod(i,300)==0 
+    if mod(i,200)==0 
         pause(1)
     end
 end
@@ -244,40 +243,40 @@ inputDataForNetGPS = horzcat(sheepPosHistory,dogPosHistory);
 
 save('TrainingData001_50RoundsOf300', 'inputDataForNet', 'outputDataForNet');
 save('TrainingData001GPS_50RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet')
-%p = randperm(n,k)
-inputDataForNet = inputDataForNet(1:9000,:);
-outputDataForNet = outputDataForNet(1:9000,:);
-inputDataForNetGPS = inputDataForNetGPS(1:9000,:);
-save('TrainingData001_30RoundsOf300', 'inputDataForNet', 'outputDataForNet');
-save('TrainingData001GPS_30RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
 
 inputDataForNet = inputDataForNet(1:6000,:);
 outputDataForNet = outputDataForNet(1:6000,:);
 inputDataForNetGPS = inputDataForNetGPS(1:6000,:);
-save('TrainingData001_20RoundsOf300', 'inputDataForNet', 'outputDataForNet');
-save('TrainingData001GPS_20RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
+save('TrainingData001_30RoundsOf300', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData001GPS_30RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
 
-inputDataForNet = inputDataForNet(1:3000,:);
-outputDataForNet = outputDataForNet(1:3000,:);
-inputDataForNetGPS = inputDataForNetGPS(1:3000,:);
-save('TrainingData001_10RoundsOf300', 'inputDataForNet', 'outputDataForNet');
-save('TrainingData001GPS_10RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
+inputDataForNet = inputDataForNet(1:4000,:);
+outputDataForNet = outputDataForNet(1:4000,:);
+inputDataForNetGPS = inputDataForNetGPS(1:4000,:);
+save('TrainingData001_20RoundsOf200', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData001GPS_20RoundsOf200', 'inputDataForNetGPS', 'outputDataForNet');
 
-inputDataForNet = inputDataForNet(1:1500,:);
-outputDataForNet = outputDataForNet(1:1500,:);
-inputDataForNetGPS = inputDataForNetGPS(1:1500,:);
-save('TrainingData001_5RoundsOf300', 'inputDataForNet', 'outputDataForNet');
-save('TrainingData001GPS_5RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
+inputDataForNet = inputDataForNet(1:2000,:);
+outputDataForNet = outputDataForNet(1:2000,:);
+inputDataForNetGPS = inputDataForNetGPS(1:2000,:);
+save('TrainingData001_10RoundsOf200', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData001GPS_10RoundsOf200', 'inputDataForNetGPS', 'outputDataForNet');
 
-inputDataForNet = inputDataForNet(1:600,:);
-outputDataForNet = outputDataForNet(1:600,:);
-inputDataForNetGPS = inputDataForNetGPS(1:600,:);
-save('TrainingData001_2RoundsOf300', 'inputDataForNet', 'outputDataForNet');
-save('TrainingData001GPS_2RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
+inputDataForNet = inputDataForNet(1:1000,:);
+outputDataForNet = outputDataForNet(1:1000,:);
+inputDataForNetGPS = inputDataForNetGPS(1:1000,:);
+save('TrainingData001_5RoundsOf200', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData001GPS_5RoundsOf200', 'inputDataForNetGPS', 'outputDataForNet');
 
-inputDataForNet = inputDataForNet(1:300,:);
-outputDataForNet = outputDataForNet(1:300,:);
-inputDataForNetGPS = inputDataForNetGPS(1:300,:);
-save('TrainingData001_1RoundsOf300', 'inputDataForNet', 'outputDataForNet');
-save('TrainingData001GPS_1RoundsOf300', 'inputDataForNetGPS', 'outputDataForNet');
+inputDataForNet = inputDataForNet(1:400,:);
+outputDataForNet = outputDataForNet(1:400,:);
+inputDataForNetGPS = inputDataForNetGPS(1:400,:);
+save('TrainingData001_2RoundsOf200', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData001GPS_2RoundsOf200', 'inputDataForNetGPS', 'outputDataForNet');
+
+inputDataForNet = inputDataForNet(1:200,:);
+outputDataForNet = outputDataForNet(1:200,:);
+inputDataForNetGPS = inputDataForNetGPS(1:200,:);
+save('TrainingData001_1RoundsOf200', 'inputDataForNet', 'outputDataForNet');
+save('TrainingData001GPS_1RoundsOf200', 'inputDataForNetGPS', 'outputDataForNet');
 

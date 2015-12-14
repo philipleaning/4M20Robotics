@@ -14,8 +14,7 @@ output = [output outputDataForNet'];
 
 x = input;
 t = output;
-size(x)
-size(t)
+
 %% Net Creation and Training
 % Choose a Training Function
 % For a list of all training functions type: help nntrain
@@ -25,7 +24,7 @@ size(t)
 trainFcn = 'trainlm';  % Levenberg-Marquardt backpropagation.
 
 % Create a Fitting Network
-hiddenLayerSize = 120;
+hiddenLayerSize = 16;
 net = fitnet(hiddenLayerSize,trainFcn);
 
 % Setup Division of Data for Training, Validation, Testing

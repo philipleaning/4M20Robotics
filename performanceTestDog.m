@@ -42,12 +42,17 @@ load TrainingData5RoundsOf200
 % Create nets
 
 %nets = net.empty()
-net1 = createNetFromFileName('TrainingData001_5RoundsOf200');
-net2 = createNetFromFileName('TrainingData001_2RoundsOf200');
 
+net1 = createNetFromFileName('TrainingData001GPS_50RoundsOf200');
+net2 = createNetFromFileName('TrainingData001GPS_30RoundsOf200');
+net3 = createNetFromFileName('TrainingData001GPS_20RoundsOf200');
+net4 = createNetFromFileName('TrainingData001GPS_10RoundsOf200');
+net5 = createNetFromFileName('TrainingData001GPS_5RoundsOf200');
+net6 = createNetFromFileName('TrainingData001GPS_2RoundsOf200');
+net7 = createNetFromFileName('TrainingData001GPS_1RoundsOf200');
 
 % Stick in array
-nets = {net1 net2};
+nets = {net1 net2 net3 net4 net5 net6 net7};
 
 % Store end variance of each net
 endVarianceForEachNet = [];
@@ -63,22 +68,37 @@ fprintf('Running simulation...')
 
 
 for n=1:numel(nets)
+    n
     net = nets{n};
 
     % Store variance of each trial
     trialVariances = [];
     
-    for i=1:600
+    for i=1:1000
         if mod(i,100) == 0 
             i
         end
         %% Reload shob and positions every 500 steps. Store variance of shobs
         if mod(i,200) == 0 
+            total_pos = 0;
+            for x = 1:number_of_boids
+                total_pos = total_pos + boids_array(x).position;
+            end
+            cenOfMass = total_pos/number_of_boids;
+            sumVar = 0;
+            for y = 1:number_of_boids
+                a=(boids_array(y).position-cenOfMass);
+                boidDist=sqrt(a(1)*a(1)+a(2)*a(2));
+                var=boidDist*boidDist;
+                sumVar = sumVar + var;
+            end
+            currentVariance = sumVar/number_of_boids;
             for k = 1:number_of_boids
                 boids_array(k).position = [rand*field_size, rand*field_size];
+                boids_array(k).velocity = [0,0];
             end 
-            dog_1.position = [0 0];
-            currentVariance = 1;
+            dog_1.position = [rand*field_size, rand*field_size];
+            dog_1.velocity = [0,0];
             trialVariances = [trialVariances; currentVariance];
         end
 
@@ -96,9 +116,11 @@ for n=1:numel(nets)
 
         % Reset sheep mass count to 0
         dog_1.sheepMass = [0 0 0 0];
+        sheepPos = [];
         % Count sheep in quadrants
         for x = 1:numel(boids_array)
            b = boids_array(x);
+           sheepPos = [sheepPos;b.position];
            distMass = (1/norm(dog_1.position-b.position));
 
            if b.position(1) < dog_1.position(1) && b.position(2) < dog_1.position(2) %bot left 
@@ -193,8 +215,10 @@ for n=1:numel(nets)
         
         %% Move Dog and Bound Dog to field
         if i > 20
-            input = [dog_1.sheepMass];% dog_1.sheepMassHistory(end-9,:)];
-            dog_1.velocity = net(input')';
+            %input = [dog_1.sheepMass]; %for quad
+            input = [sheepPos(:,1);sheepPos(:,2);dog_1.position']; %for GPS
+            %dog_1.velocity = net(input')'; %for quad
+            dog_1.velocity = net(input)'; %for GPS
         end
         dog_1.sheepMassHistory = [dog_1.sheepMassHistory; dog_1.sheepMass];
 
@@ -223,12 +247,15 @@ for n=1:numel(nets)
         end                       
         
         %% Update figures
-        plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos);
-        dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2));
-        pause(0.05);
+        %plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos);
+        %dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2));
+        %pause(0.05);
     end
     %% Average End Variance and Store
+    n
     averageVariance = mean(trialVariances);
     endVarianceForEachNet = [endVarianceForEachNet; averageVariance]
+    
 end
-
+trainLength = [50 30 20 10 5 2 1];
+plot(trainLength,endVarianceForEachNet)

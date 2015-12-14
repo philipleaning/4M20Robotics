@@ -69,14 +69,27 @@ for n=1:numel(nets)
     trialVariances = [];
     
     for i=1:600
-        i
+        if mod(i,100) == 0 
+            i
+        end
         %% Reload shob and positions every 500 steps. Store variance of shobs
         if mod(i,200) == 0 
+            total_pos = 0;
+            for x = 1:number_of_boids
+                total_pos = total_pos + boids_array(x).position;
+            end
+            cenOfMass = total_pos/number_of_boids;
+            for y = 1:number_of_boids
+                boidDist=(boids_array(y).position-cenOfMass)
+                boidDist=sqrt(a(1)*a(1)+a(2)*a(2))
+                var=a*a
+            end
+            currentVariance = 1;
             for k = 1:number_of_boids
                 boids_array(k).position = [rand*field_size, rand*field_size];
             end 
             dog_1.position = [0 0];
-            currentVariance = 1;
+            
             trialVariances = [trialVariances; currentVariance];
         end
 
@@ -162,7 +175,7 @@ for n=1:numel(nets)
             end
 
         end
-
+        
         %% Bound boids approximately to field, bounce them back with a velocity
         % change if they leave
         for j=1:numel(boids_array)
@@ -188,7 +201,7 @@ for n=1:numel(nets)
             boids_x_pos(j) = b.position(1);
             boids_y_pos(j) = b.position(2);
         end
-
+        
         %% Move Dog and Bound Dog to field
         if i > 20
             input = [dog_1.sheepMass];% dog_1.sheepMassHistory(end-9,:)];
@@ -200,7 +213,7 @@ for n=1:numel(nets)
         if speed > 16
               dog_1.velocity = (dog_1.velocity / speed) * 16;
         end
-        dog_1.velocity
+        dog_1.velocity;
         dog_1.position = dog_1.position + dog_1.velocity;
 
         if dog_1.position(1) < 30 && dog_1.velocity(1) < 0
@@ -219,11 +232,11 @@ for n=1:numel(nets)
             dog_1.position(2) = field_size - 30;
               %dog_1.velocity(2) = dog_1.velocity(2) - 15;      
         end                       
-        a = 3
+        
         %% Update figures
-        plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos);
-        dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2));
-        pause(0.05);
+        %plotHandle.set('XData', boids_x_pos, 'YData', boids_y_pos);
+        %dogPlot.set('XData', dog_1.position(1), 'YData', dog_1.position(2));
+        %pause(0.05);
     end
     %% Average End Variance and Store
     averageVariance = mean(trialVariances);
